@@ -1,0 +1,79 @@
+// SidebarMenu.module.tsx
+import React, { useState, useRef, useEffect } from 'react';
+import MenuContent from './MenuContent';
+import styles from './SidebarMenu.module.css';
+
+interface SidebarMenuProps {
+    isMenuOpen: boolean;
+    toggleMenu: () => void;
+}
+
+const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu }) => {
+    const [isAccordionOpen, setIsAccordionOpen] = useState({ home: false, another: false });
+    const menuRef = useRef<HTMLDivElement | null>(null);
+
+    const toggleAccordion = (section: string) => {
+        // @ts-ignore
+        setIsAccordionOpen(prevState => ({ ...prevState, [section]: !prevState[section] }));
+    };
+
+    const handleOptionClick = (option: string) => {
+        console.log(`Clicked on ${option}`);
+        toggleMenu(); // Cierra el menú cuando se hace clic en una opción
+    };
+
+    const menuSections = {
+        home: { title: 'Home', options: ['Home', 'Option 1', 'Option 2'] },
+        another: { title: 'Another Page', options: ['Another Page', 'Option 1', 'Option 2'] }
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && event.target instanceof Node && !menuRef.current.contains(event.target) && isMenuOpen) {
+                toggleMenu();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isMenuOpen, toggleMenu]);
+
+    return (
+        <aside ref={menuRef} className={`${styles.sidebar} ${isMenuOpen ? styles.open : ''}`}>
+            <nav>
+                <ul>
+                    <li>
+                        <button
+                            onClick={() => toggleAccordion('home')}
+                            className={`${styles.accordionButton} ${isAccordionOpen.home ? styles.open : ''}`}
+                        >
+                            Home
+                        </button>
+                        <div className={`${styles.submenu} ${isAccordionOpen.home ? styles.open : ''}`}>
+                            {isAccordionOpen.home && (
+                                <MenuContent section={menuSections.home} onOptionClick={handleOptionClick} />
+                            )}
+                        </div>
+                    </li>
+                    <li>
+                        <button
+                            onClick={() => toggleAccordion('another')}
+                            className={`${styles.accordionButton} ${isAccordionOpen.another ? styles.open : ''}`}
+                        >
+                            Another Page
+                        </button>
+                        <div className={`${styles.submenu} ${isAccordionOpen.another ? styles.open : ''}`}>
+                            {isAccordionOpen.another && (
+                                <MenuContent section={menuSections.another} onOptionClick={handleOptionClick} />
+                            )}
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    );
+};
+
+export default SidebarMenuModule;
