@@ -1,15 +1,3 @@
-/* Elimina los puntos de las listas en el menú principal y el submenú */
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-/* Estilo para los elementos de la lista en el menú principal */
-.sidebar ul li {
-    margin: 10px 0;
-}
-
 /* Estilos para la barra lateral */
 .sidebar {
     width: 250px;
@@ -25,8 +13,27 @@
     padding-top: 20px;
 }
 
+/* Mantiene el menú abierto en pantallas grandes */
+@media (min-width: 768px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+}
+
+/* Solo en pantallas pequeñas, permite que el menú se oculte */
 .sidebar.open {
     transform: translateX(0);
+}
+
+/* Elimina los puntos de las listas en el menú principal y el submenú */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin: 10px 0;
 }
 
 /* Estilos para el botón del acordeón */
@@ -69,7 +76,6 @@
     padding-top: 10px;
 }
 
-/* Estilo para los elementos de lista en el submenú */
 .submenu li {
     margin-top: 10px;
 }
@@ -91,8 +97,7 @@
     color: #fff;
 }
 
-
-/* Flecha indicadora en el botón */
+/* Flecha indicadora en el botón del acordeón */
 .accordionButton::after {
     content: '▼';
     float: right;
