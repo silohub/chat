@@ -41,12 +41,12 @@ class _UiSettings(BaseSettings):
         env_ignore_empty=True
     )
 
-    title: str = "SaiLO"
+    title: str = ""
     logo: Optional[str] = None
     chat_logo: Optional[str] = None
     chat_title: str = "Start chatting"
     chat_description: str = "This chatbot is configured to answer your questions"
-    favicon: str = "/favicon.ico"
+    favicon: str = "https://tomi.tomashnos.com.ar/assets/images/business-group/tomashnos/favicon.svg"
     show_share_button: bool = True
     show_chat_history_button: bool = True
 

@@ -1,12 +1,21 @@
+/* Layout general */
 .layout {
   display: flex;
+  flex-direction: row;
+  height: 100vh; /* Asegura que el layout ocupe toda la altura de la pantalla */
+}
+
+/* Ajuste del contenedor del contenido y header */
+.contentWrapper {
+  flex: 1;
+  display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 /* Header styles */
 .header {
   background-color: #f2f2f2;
+  width: 100%;
 }
 
 .headerContainer {
@@ -36,44 +45,8 @@
   height: 32px;
   width: auto;
   margin-left: 36px;
-}
-
-/* Sidebar styles */
-.sidebar {
-  width: 250px;
-  height: 100vh;
-  background-color: #333;
-  color: white;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 1000;
-  padding-top: 20px;
-}
-
-.sidebar.open {
-  transform: translateX(0);
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebar ul li {
-  margin: 20px;
-}
-
-.sidebar ul li a {
-  color: #fff;
-  text-decoration: none;
-}
-
-.sidebar ul li a:hover {
-  color: #ddd;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 /* Menu button for mobile */
@@ -83,83 +56,43 @@
   border: none;
   color: #242424;
   position: fixed;
-  top: 20px;
+  top: 0px;
   left: 20px;
   z-index: 1010;
   cursor: pointer;
-  display: none;
+  display: none; /* Solo visible en pantallas pequeñas */
 }
 
+/* Oculta el botón cuando el menú está abierto */
 .menuButton.hidden {
   display: none;
 }
 
-.accordionButton {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-  text-align: left;
-  width: 100%;
-  padding: 10px 20px;
-}
-
-.submenu {
-  list-style: none;
-  padding-left: 20px;
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-}
-
-.submenu.open {
-  max-height: 500px; /* Ajusta según el contenido */
-  opacity: 1;
-  padding-top: 10px;
-}
-
-.submenu li {
-  margin-top: 10px;
-}
-
-.submenu li a {
-  color: #ddd;
-  text-decoration: none;
-}
-
-.submenu li a:hover {
-  color: #fff;
-}
-
-/* Flecha indicadora en el botón */
-.accordionButton::after {
-  content: '▼';
-  float: right;
-  transform: rotate(0deg);
-  transition: transform 0.3s ease;
-}
-
-.accordionButton.open::after {
-  transform: rotate(-180deg);
-}
-
-/* Adjustments for mobile view */
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .headerTitleContainer {
     margin-left: 4px;
   }
 
   .headerIcon {
-    margin-left: 26px;
+    display: none;
   }
 
   .menuButton {
-    display: block;
+    display: block; /* Muestra el botón de menú en pantallas pequeñas */
   }
 
-  .sidebar {
-    z-index: 999; /* Lower than the button */
+  .contentWrapper {
+    margin-left: 0; /* No espacio extra para el sidebar en pantallas pequeñas */
+  }
+}
+
+@media (min-width: 769px) {
+  .menuButton {
+    display: none; /* Oculta el botón de menú en pantallas grandes */
+  }
+
+  .contentWrapper {
+    margin-left: 250px; /* Deja espacio para el sidebar en pantallas grandes */
   }
 }
