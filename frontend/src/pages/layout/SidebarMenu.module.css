@@ -10,7 +10,6 @@
     left: 0;
     top: 0;
     z-index: 1000;
-    padding-top: 20px;
 }
 
 /* Mantiene el menú abierto en pantallas grandes */
@@ -101,3 +100,19 @@
     color: black !important;
 }
 
+.headerTitle {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 28px;
+    display: flex;
+    align-items: flex-end;
+    color: #242424;
+}
+
+.headerIcon {
+    height: 32px;
+    width: auto;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}

@@ -3,6 +3,8 @@ import { AppStateContext } from '../../state/AppProvider';
 import MenuContent from './MenuContent';
 import styles from './SidebarMenu.module.css';
 import {Accordion, AccordionHeader, AccordionItem, AccordionPanel} from "@fluentui/react-components";
+import {Stack} from "@fluentui/react";
+import Contoso from "../../assets/Contoso.svg";
 
 interface SidebarMenuProps {
     isMenuOpen: boolean;
@@ -11,9 +13,12 @@ interface SidebarMenuProps {
 
 const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu }) => {
     // @ts-ignore
-    const { dispatch } = useContext(AppStateContext); // Usamos el dispatch del contexto
-    const [isAccordionOpen, setIsAccordionOpen] = useState({ home: false, another: false });
+    const { dispatch } = useContext(AppStateContext);
+    const appStateContext = useContext(AppStateContext);
+    const [ setIsAccordionOpen] = useState({ home: false, another: false });
     const menuRef = useRef<HTMLDivElement | null>(null);
+    const ui = appStateContext?.state.frontendSettings?.ui;
+    const [logo, setLogo] = useState('');
 
     const toggleAccordion = (section: string) => {
         // @ts-ignore
@@ -31,6 +36,10 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
     };
 
     useEffect(() => {
+        if (!appStateContext?.state.isLoading) setLogo(ui?.logo || Contoso);
+    }, [appStateContext?.state.isLoading]);
+
+    useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && event.target instanceof Node && !menuRef.current.contains(event.target) && isMenuOpen) {
                 toggleMenu();
@@ -45,6 +54,10 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
 
     return (
         <aside ref={menuRef} className={`${styles.sidebar} ${isMenuOpen ? styles.open : ''}`}>
+            <Stack horizontalAlign="center" verticalAlign="center">
+                <img src={logo} className={styles.headerIcon} alt="Logo" aria-hidden="true"/>
+                <h1 className={styles.headerTitle}>{ui?.title}</h1>
+            </Stack>
             <nav>
                 <ul>
                     <Accordion multiple collapsible>

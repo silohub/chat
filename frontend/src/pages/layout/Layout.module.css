@@ -31,24 +31,6 @@
   text-decoration: none;
 }
 
-.headerTitle {
-  font-style: normal;
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 28px;
-  display: flex;
-  align-items: flex-end;
-  color: #242424;
-}
-
-.headerIcon {
-  height: 32px;
-  width: auto;
-  margin-left: 36px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-
 /* Menu button for mobile */
 .menuButton {
   font-size: 24px;
@@ -56,7 +38,7 @@
   border: none;
   color: #242424;
   position: fixed;
-  top: 0px;
+  top: 4px;
   left: 20px;
   z-index: 1010;
   cursor: pointer;
@@ -96,3 +78,5 @@
     margin-left: 250px; /* Deja espacio para el sidebar en pantallas grandes */
   }
 }
+
+

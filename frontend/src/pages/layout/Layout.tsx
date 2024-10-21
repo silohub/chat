@@ -14,7 +14,6 @@ const Layout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copyClicked, setCopyClicked] = useState(false);
   const [copyText, setCopyText] = useState('Copy URL');
-  const [shareLabel, setShareLabel] = useState('Share');
   const [hideHistoryLabel, setHideHistoryLabel] = useState('Hide chat history');
   const [showHistoryLabel, setShowHistoryLabel] = useState('Show chat history');
   const [logo, setLogo] = useState('');
@@ -49,25 +48,24 @@ const Layout = () => {
           ☰
         </button>
 
+
+
         {/* Menú lateral como componente separado */}
         <SidebarMenuModule isMenuOpen={isMenuOpen} toggleMenu={toggleMenu}/>
 
         <div className={styles.contentWrapper}>
           <header className={styles.header} role="banner">
             <Stack horizontal verticalAlign="center" horizontalAlign="space-between">
-              <Stack horizontal verticalAlign="center">
-                <img src={logo} className={styles.headerIcon} alt="Logo" aria-hidden="true"/>
-                <h1 className={styles.headerTitle}>{ui?.title}</h1>
-              </Stack>
-              <Stack horizontal tokens={{childrenGap: 4}} className={styles.shareButtonContainer}>
-                {appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured && ui?.show_chat_history_button !== false && (
-                    <HistoryButton
-                        onClick={handleHistoryClick}
-                        text={appStateContext?.state?.isChatHistoryOpen ? hideHistoryLabel : showHistoryLabel}
-                    />
-                )}
-                {/*{ui?.show_share_button && <ShareButton onClick={handleShareClick} text={shareLabel}/>}*/}
-              </Stack>
+
+              {/*<Stack horizontal tokens={{childrenGap: 4}} className={styles.shareButtonContainer}>*/}
+              {/*  {appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured && ui?.show_chat_history_button !== false && (*/}
+              {/*      <HistoryButton*/}
+              {/*          onClick={handleHistoryClick}*/}
+              {/*          text={appStateContext?.state?.isChatHistoryOpen ? hideHistoryLabel : showHistoryLabel}*/}
+              {/*      />*/}
+              {/*  )}*/}
+              {/*  /!*{ui?.show_share_button && <ShareButton onClick={handleShareClick} text={shareLabel}/>}*!/*/}
+              {/*</Stack>*/}
             </Stack>
           </header>
           <Outlet/>
