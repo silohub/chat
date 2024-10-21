@@ -1,9 +1,7 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { FontIcon, Stack, TextField } from '@fluentui/react'
 import { SendRegular } from '@fluentui/react-icons'
-
 import Send from '../../assets/Send.svg'
-
 import styles from './QuestionInput.module.css'
 import { ChatMessage } from '../../api'
 import { AppStateContext } from '../../state/AppProvider'
@@ -15,14 +13,19 @@ interface Props {
   placeholder?: string
   clearOnSend?: boolean
   conversationId?: string
+  initialValue?: string // Nueva prop
 }
 
-export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conversationId }: Props) => {
-  const [question, setQuestion] = useState<string>('')
+export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conversationId, initialValue }: Props) => {
+  const [question, setQuestion] = useState<string>(initialValue || '') // Usa initialValue para inicializar el estado
   const [base64Image, setBase64Image] = useState<string | null>(null);
 
   const appStateContext = useContext(AppStateContext)
   const OYD_ENABLED = appStateContext?.state.frontendSettings?.oyd_enabled || false;
+
+  useEffect(() => {
+    setQuestion(initialValue || '') // Actualiza el estado si cambia initialValue
+  }, [initialValue]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -75,49 +78,49 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
   const sendQuestionDisabled = disabled || !question.trim()
 
   return (
-    <Stack horizontal className={styles.questionInputContainer}>
-      <TextField
-        className={styles.questionInputTextArea}
-        placeholder={placeholder}
-        multiline
-        resizable={false}
-        borderless
-        value={question}
-        onChange={onQuestionChange}
-        onKeyDown={onEnterPress}
-      />
-      {!OYD_ENABLED && (
-        <div className={styles.fileInputContainer}>
-          <input
-            type="file"
-            id="fileInput"
-            onChange={(event) => handleImageUpload(event)}
-            accept="image/*"
-            className={styles.fileInput}
-          />
-          <label htmlFor="fileInput" className={styles.fileLabel} aria-label='Upload Image'>
-            <FontIcon
-              className={styles.fileIcon}
-              iconName={'PhotoCollection'}
-              aria-label='Upload Image'
-            />
-          </label>
-        </div>)}
-      {base64Image && <img className={styles.uploadedImage} src={base64Image} alt="Uploaded Preview" />}
-      <div
-        className={styles.questionInputSendButtonContainer}
-        role="button"
-        tabIndex={0}
-        aria-label="Ask question button"
-        onClick={sendQuestion}
-        onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? sendQuestion() : null)}>
-        {sendQuestionDisabled ? (
-          <SendRegular className={styles.questionInputSendButtonDisabled} />
-        ) : (
-          <img src={Send} className={styles.questionInputSendButton} alt="Send Button" />
-        )}
-      </div>
-      <div className={styles.questionInputBottomBorder} />
-    </Stack>
+      <Stack horizontal className={styles.questionInputContainer}>
+        <TextField
+            className={styles.questionInputTextArea}
+            placeholder={placeholder}
+            multiline
+            resizable={false}
+            borderless
+            value={question}
+            onChange={onQuestionChange}
+            onKeyDown={onEnterPress}
+        />
+        {!OYD_ENABLED && (
+            <div className={styles.fileInputContainer}>
+              <input
+                  type="file"
+                  id="fileInput"
+                  onChange={(event) => handleImageUpload(event)}
+                  accept="image/*"
+                  className={styles.fileInput}
+              />
+              <label htmlFor="fileInput" className={styles.fileLabel} aria-label='Upload Image'>
+                <FontIcon
+                    className={styles.fileIcon}
+                    iconName={'PhotoCollection'}
+                    aria-label='Upload Image'
+                />
+              </label>
+            </div>)}
+        {base64Image && <img className={styles.uploadedImage} src={base64Image} alt="Uploaded Preview" />}
+        <div
+            className={styles.questionInputSendButtonContainer}
+            role="button"
+            tabIndex={0}
+            aria-label="Ask question button"
+            onClick={sendQuestion}
+            onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? sendQuestion() : null)}>
+          {sendQuestionDisabled ? (
+              <SendRegular className={styles.questionInputSendButtonDisabled} />
+          ) : (
+              <img src={Send} className={styles.questionInputSendButton} alt="Send Button" />
+          )}
+        </div>
+        <div className={styles.questionInputBottomBorder} />
+      </Stack>
   )
 }

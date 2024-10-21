@@ -1,5 +1,5 @@
-// SidebarMenu.module.tsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useContext, useRef, useEffect, useState } from 'react';
+import { AppStateContext } from '../../state/AppProvider';
 import MenuContent from './MenuContent';
 import styles from './SidebarMenu.module.css';
 
@@ -9,22 +9,24 @@ interface SidebarMenuProps {
 }
 
 const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu }) => {
+    // @ts-ignore
+    const { dispatch } = useContext(AppStateContext); // Usamos el dispatch del contexto
     const [isAccordionOpen, setIsAccordionOpen] = useState({ home: false, another: false });
     const menuRef = useRef<HTMLDivElement | null>(null);
 
     const toggleAccordion = (section: string) => {
         // @ts-ignore
-        setIsAccordionOpen(prevState => ({ ...prevState, [section]: !prevState[section] }));
+        setIsAccordionOpen((prevState) => ({ ...prevState, [section]: !prevState[section] }));
     };
 
     const handleOptionClick = (option: string) => {
-        console.log(`Clicked on ${option}`);
+        dispatch({ type: 'INJECT_QUESTION_TEXT', payload: option }); // Inyectamos el texto en el estado global
         toggleMenu(); // Cierra el menú cuando se hace clic en una opción
     };
 
     const menuSections = {
         home: { title: 'Home', options: ['Home', 'Option 1', 'Option 2'] },
-        another: { title: 'Another Page', options: ['Another Page', 'Option 1', 'Option 2'] }
+        another: { title: 'Another Page', options: ['Another Page', 'Option 1', 'Option 2'] },
     };
 
     useEffect(() => {
