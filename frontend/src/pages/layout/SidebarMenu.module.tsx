@@ -62,7 +62,9 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
                 <ul>
                     <Accordion multiple collapsible>
                         <AccordionItem value="home">
-                            <AccordionHeader className={styles['accordion-header-custom']}>
+                            <AccordionHeader
+                                expandIconPosition="end"
+                                className={styles.accordionHeaderCustom}>
                                 {menuSections.home.title}
                             </AccordionHeader>
                             <AccordionPanel>
@@ -71,7 +73,9 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
                         </AccordionItem>
 
                         <AccordionItem value="another">
-                            <AccordionHeader className={styles['accordion-header-custom']}>
+                            <AccordionHeader
+                                expandIconPosition="end"
+                                className={styles.accordionHeaderCustom}>
                                 {menuSections.another.title}
                             </AccordionHeader>
                             <AccordionPanel>

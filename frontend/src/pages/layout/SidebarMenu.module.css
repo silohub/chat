@@ -96,8 +96,11 @@
     color: #fff;
 }
 
-.accordion-header-custom {
+.accordionHeaderCustom {
     color: black !important;
+    justify-content: space-between;
+    padding-right: 10px;
+    padding-left: 10px;
 }
 
 .headerTitle {
