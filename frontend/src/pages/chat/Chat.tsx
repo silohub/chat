@@ -553,9 +553,55 @@ const Chat = () => {
       return response
     }
 
-    // Condiciones para guardar los mensajes según el estado de CosmosDB y de la aplicación
-    // ...
+    if (appStateContext && appStateContext.state.currentChat && processMessages === messageStatus.Done) {
+      if (appStateContext.state.isCosmosDBAvailable.cosmosDB) {
+        if (!appStateContext?.state.currentChat?.messages) {
+          console.error('Failure fetching current chat state.')
+          return
+        }
+        const noContentError = appStateContext.state.currentChat.messages.find(m => m.role === ERROR)
+
+        if (!noContentError) {
+          saveToDB(appStateContext.state.currentChat.messages, appStateContext.state.currentChat.id)
+              .then(res => {
+                if (!res.ok) {
+                  let errorMessage =
+                      "An error occurred. Answers can't be saved at this time. If the problem persists, please contact the site administrator."
+                  let errorChatMsg: ChatMessage = {
+                    id: uuid(),
+                    role: ERROR,
+                    content: errorMessage,
+                    date: new Date().toISOString()
+                  }
+                  if (!appStateContext?.state.currentChat?.messages) {
+                    let err: Error = {
+                      ...new Error(),
+                      message: 'Failure fetching current chat state.'
+                    }
+                    throw err
+                  }
+                  setMessages([...appStateContext?.state.currentChat?.messages, errorChatMsg])
+                }
+                return res as Response
+              })
+              .catch(err => {
+                console.error('Error: ', err)
+                let errRes: Response = {
+                  ...new Response(),
+                  ok: false,
+                  status: 500
+                }
+                return errRes
+              })
+        }
+      } else {
+      }
+      appStateContext?.dispatch({ type: 'UPDATE_CHAT_HISTORY', payload: appStateContext.state.currentChat })
+      setMessages(appStateContext.state.currentChat.messages)
+      setProcessMessages(messageStatus.NotRunning)
+    }
   }, [processMessages])
+
 
   // Efecto para obtener la información del usuario si la autenticación está habilitada
   useEffect(() => {
