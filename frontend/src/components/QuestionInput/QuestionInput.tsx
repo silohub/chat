@@ -19,14 +19,23 @@ interface Props {
 export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conversationId, initialValue }: Props) => {
   const [question, setQuestion] = useState<string>(initialValue || '') // Usa initialValue para inicializar el estado
   const [base64Image, setBase64Image] = useState<string | null>(null);
+  const [shouldSend, setShouldSend] = useState(false); // Nueva bandera para controlar el envío
 
   const appStateContext = useContext(AppStateContext)
   const OYD_ENABLED = appStateContext?.state.frontendSettings?.oyd_enabled || false;
 
   useEffect(() => {
     setQuestion(initialValue || '') // Actualiza el estado si cambia initialValue
+    setShouldSend(true); // Activa la bandera para enviar la pregunta
   }, [initialValue]);
 
+  // Nuevo useEffect para enviar la pregunta cuando el valor de question está listo
+  useEffect(() => {
+    if (shouldSend && question.trim()) {
+      sendQuestion(); // Envía la pregunta automáticamente cuando initialValue cambia y question está lista
+      setShouldSend(false); // Resetea la bandera para evitar múltiples envíos
+    }
+  }, [shouldSend, question]);
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
@@ -58,7 +67,7 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
       onSend(questionTest)
       setBase64Image(null)
     }
-
+    console.log("pasa por aca ", questionTest)
     if (clearOnSend) {
       setQuestion('')
     }

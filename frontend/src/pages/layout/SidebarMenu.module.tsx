@@ -25,8 +25,8 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
     };
 
     const menuSections = {
-        home: { title: 'Home', options: ['Home', 'Option 1', 'Option 2'] },
-        another: { title: 'Another Page', options: ['Another Page', 'Option 1', 'Option 2'] },
+        home: { title: 'Tomás Hermanos', options: ['¿Quién es Tomás Hermanos?', '¿Cómo me puedo contactar?'] },
+        another: { title: 'Otra empresa', options: ['¿Otra pregunta?'] },
     };
 
     useEffect(() => {
@@ -51,7 +51,7 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
                             onClick={() => toggleAccordion('home')}
                             className={`${styles.accordionButton} ${isAccordionOpen.home ? styles.open : ''}`}
                         >
-                            Home
+                            {menuSections.home.title}
                         </button>
                         <div className={`${styles.submenu} ${isAccordionOpen.home ? styles.open : ''}`}>
                             {isAccordionOpen.home && (
@@ -64,7 +64,7 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
                             onClick={() => toggleAccordion('another')}
                             className={`${styles.accordionButton} ${isAccordionOpen.another ? styles.open : ''}`}
                         >
-                            Another Page
+                            {menuSections.another.title}
                         </button>
                         <div className={`${styles.submenu} ${isAccordionOpen.another ? styles.open : ''}`}>
                             {isAccordionOpen.another && (
