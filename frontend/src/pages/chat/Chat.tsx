@@ -948,7 +948,7 @@ const Chat = () => {
                   </Stack>
                   <QuestionInput
                       clearOnSend
-                      placeholder="Type a new question..."
+                      placeholder="..."
                       disabled={isLoading}
                       initialValue={questionText} // Aquí pasamos el texto inyectado
                       onSend={(question, id) => {

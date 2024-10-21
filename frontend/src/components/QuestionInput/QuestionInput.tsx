@@ -19,23 +19,25 @@ interface Props {
 export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conversationId, initialValue }: Props) => {
   const [question, setQuestion] = useState<string>(initialValue || '') // Usa initialValue para inicializar el estado
   const [base64Image, setBase64Image] = useState<string | null>(null);
-  const [shouldSend, setShouldSend] = useState(false); // Nueva bandera para controlar el envío
+  const [isInitialValue, setIsInitialValue] = useState(false); // Nueva bandera para diferenciar cambios manuales
 
   const appStateContext = useContext(AppStateContext)
   const OYD_ENABLED = appStateContext?.state.frontendSettings?.oyd_enabled || false;
 
   useEffect(() => {
-    setQuestion(initialValue || '') // Actualiza el estado si cambia initialValue
-    setShouldSend(true); // Activa la bandera para enviar la pregunta
+    if (initialValue) {
+      setQuestion(initialValue)
+      setIsInitialValue(true) // Marca que el valor inicial proviene de fuera del componente
+    }
   }, [initialValue]);
 
-  // Nuevo useEffect para enviar la pregunta cuando el valor de question está listo
   useEffect(() => {
-    if (shouldSend && question.trim()) {
-      sendQuestion(); // Envía la pregunta automáticamente cuando initialValue cambia y question está lista
-      setShouldSend(false); // Resetea la bandera para evitar múltiples envíos
+    if (isInitialValue && question.trim()) {
+      sendQuestion() // Envía la pregunta automáticamente solo si es un cambio externo
+      setIsInitialValue(false) // Resetea la bandera
     }
-  }, [shouldSend, question]);
+  }, [isInitialValue, question]);
+
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
@@ -67,7 +69,6 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
       onSend(questionTest)
       setBase64Image(null)
     }
-    console.log("pasa por aca ", questionTest)
     if (clearOnSend) {
       setQuestion('')
     }
@@ -82,6 +83,7 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
 
   const onQuestionChange = (_ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
     setQuestion(newValue || '')
+    setIsInitialValue(false) // Asegúrate de que los cambios manuales no disparen el envío automático
   }
 
   const sendQuestionDisabled = disabled || !question.trim()
@@ -98,24 +100,24 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
             onChange={onQuestionChange}
             onKeyDown={onEnterPress}
         />
-        {!OYD_ENABLED && (
-            <div className={styles.fileInputContainer}>
-              <input
-                  type="file"
-                  id="fileInput"
-                  onChange={(event) => handleImageUpload(event)}
-                  accept="image/*"
-                  className={styles.fileInput}
-              />
-              <label htmlFor="fileInput" className={styles.fileLabel} aria-label='Upload Image'>
-                <FontIcon
-                    className={styles.fileIcon}
-                    iconName={'PhotoCollection'}
-                    aria-label='Upload Image'
-                />
-              </label>
-            </div>)}
-        {base64Image && <img className={styles.uploadedImage} src={base64Image} alt="Uploaded Preview" />}
+        {/*{!OYD_ENABLED && (*/}
+        {/*    <div className={styles.fileInputContainer}>*/}
+        {/*      <input*/}
+        {/*          type="file"*/}
+        {/*          id="fileInput"*/}
+        {/*          onChange={(event) => handleImageUpload(event)}*/}
+        {/*          accept="image/*"*/}
+        {/*          className={styles.fileInput}*/}
+        {/*      />*/}
+        {/*      <label htmlFor="fileInput" className={styles.fileLabel} aria-label='Upload Image'>*/}
+        {/*        <FontIcon*/}
+        {/*            className={styles.fileIcon}*/}
+        {/*            iconName={'PhotoCollection'}*/}
+        {/*            aria-label='Upload Image'*/}
+        {/*        />*/}
+        {/*      </label>*/}
+        {/*    </div>)}*/}
+        {/*{base64Image && <img className={styles.uploadedImage} src={base64Image} alt="Uploaded Preview" />}*/}
         <div
             className={styles.questionInputSendButtonContainer}
             role="button"
