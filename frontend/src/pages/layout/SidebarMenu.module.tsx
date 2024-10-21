@@ -2,6 +2,7 @@ import React, { useContext, useRef, useEffect, useState } from 'react';
 import { AppStateContext } from '../../state/AppProvider';
 import MenuContent from './MenuContent';
 import styles from './SidebarMenu.module.css';
+import {Accordion, AccordionHeader, AccordionItem, AccordionPanel} from "@fluentui/react-components";
 
 interface SidebarMenuProps {
     isMenuOpen: boolean;
@@ -46,32 +47,25 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
         <aside ref={menuRef} className={`${styles.sidebar} ${isMenuOpen ? styles.open : ''}`}>
             <nav>
                 <ul>
-                    <li>
-                        <button
-                            onClick={() => toggleAccordion('home')}
-                            className={`${styles.accordionButton} ${isAccordionOpen.home ? styles.open : ''}`}
-                        >
-                            {menuSections.home.title}
-                        </button>
-                        <div className={`${styles.submenu} ${isAccordionOpen.home ? styles.open : ''}`}>
-                            {isAccordionOpen.home && (
+                    <Accordion multiple collapsible>
+                        <AccordionItem value="home">
+                            <AccordionHeader className={styles['accordion-header-custom']}>
+                                {menuSections.home.title}
+                            </AccordionHeader>
+                            <AccordionPanel>
                                 <MenuContent section={menuSections.home} onOptionClick={handleOptionClick} />
-                            )}
-                        </div>
-                    </li>
-                    <li>
-                        <button
-                            onClick={() => toggleAccordion('another')}
-                            className={`${styles.accordionButton} ${isAccordionOpen.another ? styles.open : ''}`}
-                        >
-                            {menuSections.another.title}
-                        </button>
-                        <div className={`${styles.submenu} ${isAccordionOpen.another ? styles.open : ''}`}>
-                            {isAccordionOpen.another && (
+                            </AccordionPanel>
+                        </AccordionItem>
+
+                        <AccordionItem value="another">
+                            <AccordionHeader className={styles['accordion-header-custom']}>
+                                {menuSections.another.title}
+                            </AccordionHeader>
+                            <AccordionPanel>
                                 <MenuContent section={menuSections.another} onOptionClick={handleOptionClick} />
-                            )}
-                        </div>
-                    </li>
+                            </AccordionPanel>
+                        </AccordionItem>
+                    </Accordion>
                 </ul>
             </nav>
         </aside>

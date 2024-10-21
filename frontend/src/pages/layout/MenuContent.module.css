@@ -1,0 +1,21 @@
+.menu-content {
+    padding: 10px 0;
+}
+
+.menu-content button {
+    width: 100%;
+    text-align: left;
+    padding: 10px 15px;
+    background-color: transparent;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.menu-content button:hover {
+    background-color: #e1dfdd;
+}
+
+.menu-content button:focus {
+    outline: none;
+    background-color: #e1dfdd;
+}
