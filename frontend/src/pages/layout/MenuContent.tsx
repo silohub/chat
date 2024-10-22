@@ -15,15 +15,15 @@ interface MenuContentProps {
 
 const MenuContent: React.FC<MenuContentProps> = ({ section, onOptionClick }) => {
     return (
-        <Stack className={styles["menu-content"]} tokens={{ childrenGap: 10 }}>
+        <Stack className={styles["menu-content"]} tokens={{ childrenGap: 4 }}>
             {section.options.map((option, index) => (
-                <Button
+                <div
                     key={index}
-                    className={styles["menu-button"]}  // Aplicar clase personalizada
+                    className={styles["menu-button"]}
                     onClick={() => onOptionClick(option)}
                 >
                     <Text>{option}</Text>
-                </Button>
+                </div>
             ))}
         </Stack>
     );

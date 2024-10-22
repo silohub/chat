@@ -1,21 +1,24 @@
 .menu-content {
-    padding: 10px 0;
+    margin: 4px !important;
 }
 
-.menu-content button {
+.menu-button {
     width: 100%;
-    text-align: left;
-    padding: 10px 15px;
+    padding: 10px 10px;
     background-color: transparent;
     font-weight: 500;
     transition: background-color 0.2s ease;
+    border: 1px solid #CED4DA !important;
+    border-radius: 6px !important;
+    text-align: left;
+    cursor: pointer;
 }
 
-.menu-content button:hover {
+.menu-button:hover {
     background-color: #e1dfdd;
 }
 
-.menu-content button:focus {
+.menu-button:focus {
     outline: none;
     background-color: #e1dfdd;
 }

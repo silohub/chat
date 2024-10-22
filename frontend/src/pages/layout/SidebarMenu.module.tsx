@@ -7,7 +7,7 @@ import { Stack } from "@fluentui/react";
 import Contoso from "../../assets/Contoso.svg";
 // @ts-ignore
 import sectionsData from "../../assets/options.json";
-import headerLogo from "../../assets/CTT.jpg"
+import headerLogo from "../../assets/logo-ctt.svg"
 interface SidebarMenuProps {
     isMenuOpen: boolean;
     toggleMenu: () => void;
@@ -63,21 +63,22 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
     return (
         <aside ref={menuRef} className={`${styles.sidebar} ${isMenuOpen ? styles.open : ''}`}>
             <Stack  horizontal horizontalAlign="center" verticalAlign="center">
-                <img src={logo} className={styles.headerIcon} alt="Logo" aria-hidden="true" />
-                <h1 className={styles.headerTitle}>{ui?.title}</h1>
+                <div className={styles.headerIconContainer}>
+                    <img src={logo} className={styles.headerIcon} alt="Logo" aria-hidden="true"/>
+                    <h1 className={styles.headerTitle}>{ui?.title}</h1>
+                </div>
             </Stack>
             <nav>
                 <ul>
                     <Accordion multiple collapsible>
-                        {/* Mapear las secciones del JSON para generar los ítems del acordeón */}
                         {menuSections.map((section, index) => (
-                            <AccordionItem key={index} value={section.title}>
+                            <AccordionItem key={index} value={section.title} className="accordionItemCustom">
                                 <AccordionHeader
                                     expandIconPosition="end"
                                     className={styles.accordionHeaderCustom}>
                                     {section.title}
                                 </AccordionHeader>
-                                <AccordionPanel>
+                                <AccordionPanel >
                                     <MenuContent section={section} onOptionClick={handleOptionClick} />
                                 </AccordionPanel>
                             </AccordionItem>

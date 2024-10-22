@@ -39,7 +39,7 @@ import { QuestionInput } from "../../components/QuestionInput";
 import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
 import { AppStateContext } from "../../state/AppProvider";
 import { useBoolean } from "@fluentui/react-hooks";
-import headerLogo from "../../assets/CTT-mini.jpg"
+import headerLogo from "../../assets/logo-ctt-mini.svg"
 import primaryLogo from "../../assets/logo-tomas.svg"
 
 // Definición del estado del mensaje
@@ -924,14 +924,14 @@ const Chat = () => {
                         role="button"
                         styles={{
                           icon: {
-                            color: '#009974'
+                            color: '#183B57'
                           },
                           iconDisabled: {
-                            color: '#CED4DA !important'
+                            color: '#183B57 !important'
                           },
                           root: {
                             color: '#FFFFFF',
-                            background: '#F7F8E4'
+                            background: '#FFFFFF'
                           },
                           rootDisabled: {
                             background: '#F0F0F0'

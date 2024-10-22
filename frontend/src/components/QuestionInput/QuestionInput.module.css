@@ -38,7 +38,7 @@
   width: 24px;
   height: 23px;
   background: none;
-  color: #424242;
+  color: #183B57;
 }
 
 .questionInputBottomBorder {
@@ -47,7 +47,7 @@
   height: 4px;
   left: 0%;
   bottom: 0%;
-  background: #009974 ;
+  background: #183B57 ;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }

@@ -37,6 +37,14 @@
     margin: 10px 0;
 }
 
+.headerIconContainer{
+    background: #183B57;
+    height: 86px;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 8px;
+}
+
 /* Estilos para el botón del acordeón */
 .accordionButton {
     background: none;
@@ -100,9 +108,12 @@
 
 .accordionHeaderCustom {
     color: #333333 !important;
+    border: 1px solid #CED4DA !important;
+    border-radius: 6px !important;
     justify-content: space-between;
     padding-right: 10px;
     padding-left: 10px;
+    margin: 4px !important;
 }
 
 .headerTitle {
@@ -116,30 +127,25 @@
 }
 
 .headerIcon {
-    height: 80px;
+    height: 60px;
     width: auto;
-    margin-top: 10px;
-    margin-bottom: 5px;
 }
 
-/* Personalizar el thumb (barra de desplazamiento) y el track (fondo del scroll) */
 .sidebar::-webkit-scrollbar {
-    width: 10px; /* Anchura del scrollbar */
+    width: 10px;
 }
 
-/* Estilo del track (fondo de la barra de scroll) */
 .sidebar::-webkit-scrollbar-track {
-    border-radius: 10px; /* Bordes redondeados */
+    border-radius: 10px;
 }
 
-/* Estilo del thumb (barra de desplazamiento) */
 .sidebar::-webkit-scrollbar-thumb {
-    background-color: #CED4DA; /* Color del scrollbar */
-    border-radius: 10px; /* Bordes redondeados */
-    border: 1px solid #CED4DA; /* Borde del scrollbar */
+    background-color: #CED4DA;
+    border-radius: 10px;
+    border: 1px solid #CED4DA;
 }
 
-/* Cambia el color cuando el usuario está interactuando con el thumb */
 .sidebar::-webkit-scrollbar-thumb:hover {
-    background-color: #999999B5; /* Color al pasar el mouse sobre el scrollbar */
+    background-color: #999999B5;
 }
+
