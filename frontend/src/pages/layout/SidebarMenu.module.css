@@ -2,7 +2,7 @@
 .sidebar {
     width: 250px;
     height: 100vh;
-    background-color: #ffffff;
+    background-color: #183B57;
     color: white;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
@@ -107,13 +107,18 @@
 }
 
 .accordionHeaderCustom {
-    color: #333333 !important;
+    color: #fff !important;
     border: 1px solid #CED4DA !important;
     border-radius: 6px !important;
     justify-content: space-between;
     padding-right: 10px;
     padding-left: 10px;
-    margin: 4px !important;
+    margin: 6px !important;
+}
+
+.accordionHeaderCustom:hover {
+    background-color: #b9cbe4;
+    color: #333333 !important;
 }
 
 .headerTitle {

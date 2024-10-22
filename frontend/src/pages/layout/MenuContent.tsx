@@ -22,7 +22,7 @@ const MenuContent: React.FC<MenuContentProps> = ({ section, onOptionClick }) => 
                     className={styles["menu-button"]}
                     onClick={() => onOptionClick(option)}
                 >
-                    <Text>{option}</Text>
+                   {option}
                 </div>
             ))}
         </Stack>
