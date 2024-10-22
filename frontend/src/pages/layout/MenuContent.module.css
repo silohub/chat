@@ -7,14 +7,13 @@
     width: 100%;
     padding: 10px 10px;
     background-color: transparent;
-    font-weight: 500;
     transition: background-color 0.2s ease;
     border: 1px solid #CED4DA !important;
     border-radius: 6px !important;
     text-align: left;
     cursor: pointer;
     color: #fff;
-
+    font-size: 14px;
 }
 
 .menu-button:hover {

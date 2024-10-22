@@ -844,7 +844,7 @@ const Chat = () => {
 
                       </div>
                       <h1 className={styles.chatEmptyStateTitle}>Haz una pregunta</h1>
-                      <h2 className={styles.chatEmptyStateSubtitle}>{ui?.chat_description}</h2>
+                      <h2 className={styles.chatEmptyStateSubtitle}>Este chatbot esta configurado para responder tus preguntas</h2>
                     </Stack>
                 ) : (
                     <div className={styles.chatMessageStream} style={{ marginBottom: isLoading ? '40px' : '0px' }} role="log">
