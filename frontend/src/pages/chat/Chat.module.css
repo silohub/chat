@@ -63,8 +63,30 @@
 }
 
 .chatIcon {
-  height: 62px;
+  height: 90px;
   width: auto;
+  margin-right: 20px;
+
+}
+
+.imageContainer {
+  display: flex;
+}
+
+.mainLogo {
+  height: 40px;
+  width: auto;
+}
+
+.mainLogoContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.mainText {
+  color: #183B57;
+  margin-bottom: 10px;
 }
 
 .chatMessageStream {
@@ -89,7 +111,7 @@
   position: relative;
   display: flex;
   padding: 20px;
-  background: #edf5fd;
+  background: #F7F8E4;
   border-radius: 8px;
   box-shadow:
     0px 2px 4px rgba(0, 0, 0, 0.14),
@@ -370,6 +392,7 @@ a {
   max-height: 70%;
   border-radius: 4px;
 }
+
 
 @media (max-width: 480px) {
   .chatInput {

@@ -10,6 +10,8 @@
     left: 0;
     top: 0;
     z-index: 1000;
+    overflow-y: auto;
+
 }
 
 /* Mantiene el menú abierto en pantallas grandes */
@@ -97,7 +99,7 @@
 }
 
 .accordionHeaderCustom {
-    color: black !important;
+    color: #333333 !important;
     justify-content: space-between;
     padding-right: 10px;
     padding-left: 10px;
@@ -110,12 +112,34 @@
     line-height: 28px;
     display: flex;
     align-items: flex-end;
-    color: #242424;
+    color: #333333;
 }
 
 .headerIcon {
-    height: 32px;
+    height: 80px;
     width: auto;
     margin-top: 10px;
     margin-bottom: 5px;
+}
+
+/* Personalizar el thumb (barra de desplazamiento) y el track (fondo del scroll) */
+.sidebar::-webkit-scrollbar {
+    width: 10px; /* Anchura del scrollbar */
+}
+
+/* Estilo del track (fondo de la barra de scroll) */
+.sidebar::-webkit-scrollbar-track {
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+/* Estilo del thumb (barra de desplazamiento) */
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: #CED4DA; /* Color del scrollbar */
+    border-radius: 10px; /* Bordes redondeados */
+    border: 1px solid #CED4DA; /* Borde del scrollbar */
+}
+
+/* Cambia el color cuando el usuario está interactuando con el thumb */
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: #999999B5; /* Color al pasar el mouse sobre el scrollbar */
 }

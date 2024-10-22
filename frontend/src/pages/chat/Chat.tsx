@@ -39,6 +39,8 @@ import { QuestionInput } from "../../components/QuestionInput";
 import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
 import { AppStateContext } from "../../state/AppProvider";
 import { useBoolean } from "@fluentui/react-hooks";
+import headerLogo from "../../assets/CTT-mini.jpg"
+import primaryLogo from "../../assets/logo-tomas.svg"
 
 // Definición del estado del mensaje
 const enum messageStatus {
@@ -71,6 +73,8 @@ const Chat = () => {
   const [hideErrorDialog, { toggle: toggleErrorDialog }] = useBoolean(true)
   const [errorMsg, setErrorMsg] = useState<ErrorMessage | null>()
   const [logo, setLogo] = useState('')
+  const [mainLogo, setMainLogo] = useState('')
+
   const [answerId, setAnswerId] = useState<string>('')
   // @ts-ignore
   const { state, dispatch } = useContext(AppStateContext);
@@ -131,7 +135,8 @@ const Chat = () => {
   // Efecto para cargar el logo al iniciar la app
   useEffect(() => {
     if (!appStateContext?.state.isLoading) {
-      setLogo(ui?.chat_logo || ui?.logo || Contoso)
+      setLogo(headerLogo)
+      setMainLogo(primaryLogo)
     }
   }, [appStateContext?.state.isLoading])
 
@@ -768,7 +773,7 @@ const Chat = () => {
     } catch (e) {
       if (!abortController.signal.aborted) {
         let errorMessage =
-            'An error occurred. Please try again. If the problem persists, please contact the site administrator.'
+            'Ha ocurrido un error, por favor, vuelva a intentarlo'
         if (result.error?.message) {
           errorMessage = result.error.message
         } else if (typeof result.error === 'string') {
@@ -830,7 +835,14 @@ const Chat = () => {
                 {/* Si no hay mensajes, mostrar estado vacío */}
                 {!messages || messages.length < 1 ? (
                     <Stack className={styles.chatEmptyState}>
-                      <img src={logo} className={styles.chatIcon} aria-hidden="true" />
+                      <div className={styles.imageContainer}>
+                        <img src={logo} className={styles.chatIcon} aria-hidden="true"/>
+                        <div className={styles.mainLogoContainer}>
+                          <span className={styles.mainText}>UNA INICIATIVA DE</span>
+                          <img src={mainLogo} className={styles.mainLogo} aria-hidden="true"/>
+                        </div>
+
+                      </div>
                       <h1 className={styles.chatEmptyStateTitle}>{ui?.chat_title}</h1>
                       <h2 className={styles.chatEmptyStateSubtitle}>{ui?.chat_description}</h2>
                     </Stack>
@@ -875,7 +887,7 @@ const Chat = () => {
                             <div className={styles.chatMessageGpt}>
                               <Answer
                                   answer={{
-                                    answer: "Generating answer...",
+                                    answer: "Generando respuesta...",
                                     citations: [],
                                     generated_chart: null
                                   }}
@@ -912,15 +924,14 @@ const Chat = () => {
                         role="button"
                         styles={{
                           icon: {
-                            color: '#FFFFFF'
+                            color: '#009974'
                           },
                           iconDisabled: {
-                            color: '#BDBDBD !important'
+                            color: '#CED4DA !important'
                           },
                           root: {
                             color: '#FFFFFF',
-                            background:
-                                'radial-gradient(109.81% 107.82% at 100.1% 90.19%, #0F6CBD 33.63%, #2D87C3 70.31%, #8DDDD8 100%)'
+                            background: '#F7F8E4'
                           },
                           rootDisabled: {
                             background: '#F0F0F0'
