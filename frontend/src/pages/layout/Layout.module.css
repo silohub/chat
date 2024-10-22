@@ -1,11 +1,21 @@
+/* Layout general */
 .layout {
   display: flex;
-  flex-direction: column;
-  height: 100%;
+  flex-direction: row;
+  height: 100vh; /* Asegura que el layout ocupe toda la altura de la pantalla */
 }
 
+/* Ajuste del contenedor del contenido y header */
+.contentWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header styles */
 .header {
   background-color: #f2f2f2;
+  width: 100%;
 }
 
 .headerContainer {
@@ -21,91 +31,52 @@
   text-decoration: none;
 }
 
-.headerTitle {
-  font-style: normal;
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 28px;
-  display: flex;
-  align-items: flex-end;
+/* Menu button for mobile */
+.menuButton {
+  font-size: 24px;
+  background: transparent;
+  border: none;
   color: #242424;
-}
-
-.headerIcon {
-  height: 32px;
-  width: auto;
-  margin-left: 36px;
-}
-
-.shareButtonContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin-right: 20px;
-}
-
-.shareButton {
-  color: #ffffff;
-}
-
-.shareButtonText {
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 20px;
-  display: flex;
-  align-items: center;
-  color: #ffffff;
-}
-
-.urlTextBox {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  color: #707070;
-  border: 1px solid #d1d1d1;
-  border-radius: 4px;
-}
-
-.copyButtonContainer {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 5px 12px;
-  gap: 4px;
-  background: #ffffff;
-  border: 1px solid #d1d1d1;
-  border-radius: 4px;
-}
-
-.copyButtonContainer:hover {
+  position: fixed;
+  top: 4px;
+  left: 20px;
+  z-index: 1010;
   cursor: pointer;
-  background: #d1d1d1;
+  display: none; /* Solo visible en pantallas pequeñas */
 }
 
-.copyButton {
-  color: #424242;
+/* Oculta el botón cuando el menú está abierto */
+.menuButton.hidden {
+  display: none;
 }
 
-.copyButtonText {
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 20px;
-  display: flex;
-  align-items: center;
-  color: #242424;
-}
-
-@media (max-width: 480px) {
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .headerTitleContainer {
     margin-left: 4px;
   }
 
   .headerIcon {
-    margin-left: 26px;
+    display: none;
+  }
+
+  .menuButton {
+    display: block; /* Muestra el botón de menú en pantallas pequeñas */
+  }
+
+  .contentWrapper {
+    margin-left: 0; /* No espacio extra para el sidebar en pantallas pequeñas */
   }
 }
+
+@media (min-width: 769px) {
+  .menuButton {
+    display: none; /* Oculta el botón de menú en pantallas grandes */
+  }
+
+  .contentWrapper {
+    margin-left: 250px; /* Deja espacio para el sidebar en pantallas grandes */
+  }
+}
+
+

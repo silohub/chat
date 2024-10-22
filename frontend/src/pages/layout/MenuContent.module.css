@@ -1,0 +1,32 @@
+.menu-content {
+    margin: 4px;
+    padding: 5px;
+}
+
+.menu-button {
+    width: 100%;
+    padding: 10px 10px;
+    background-color: transparent;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    border: 1px solid #CED4DA !important;
+    border-radius: 6px !important;
+    text-align: left;
+    cursor: pointer;
+    color: #fff;
+
+}
+
+.menu-button:hover {
+    background-color: #b9cbe4;
+    color: #333333;
+}
+
+.menu-button:focus {
+    outline: none;
+    background-color: #b9cbe4;
+}
+
+.optionText {
+}
+

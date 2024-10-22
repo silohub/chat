@@ -1,0 +1,52 @@
+{
+  "sections": [
+    {
+      "title": "Tomás Hermanos",
+      "options": [
+        "¿Quién es Tomás Hermanos?",
+        "¿Cómo me puedo contactar?",
+        "¿Dónde están ubicados?"
+      ]
+    },
+    {
+      "title": "Industria Cárdenas",
+      "options": [
+        "¿Qué productos ofrece Industria Cárdenas?",
+        "¿Cómo puedo agendar una visita?",
+        "¿Cuáles son los horarios de atención?"
+      ]
+    },
+    {
+      "title": "Soluciones Pérez",
+      "options": [
+        "¿Qué servicios ofrece Soluciones Pérez?",
+        "¿Cómo me registro en la plataforma?",
+        "¿Ofrecen soporte técnico?"
+      ]
+    },
+    {
+      "title": "GlobalTech",
+      "options": [
+        "¿Qué tecnologías maneja GlobalTech?",
+        "¿Dónde puedo encontrar más información sobre sus productos?",
+        "¿Cuál es el tiempo de respuesta del soporte?"
+      ]
+    },
+    {
+      "title": "Transportes Hernández",
+      "options": [
+        "¿Cuáles son las rutas de Transportes Hernández?",
+        "¿Cómo puedo rastrear un envío?",
+        "¿Ofrecen envíos internacionales?"
+      ]
+    },
+    {
+      "title": "Grupo Fénix",
+      "options": [
+        "¿Qué tipo de proyectos maneja Grupo Fénix?",
+        "¿Cómo puedo aplicar para una vacante?",
+        "¿Cuál es su política de sostenibilidad?"
+      ]
+    }
+  ]
+}

@@ -1,21 +1,21 @@
 #!/bin/bash
 
 echo ""
-echo "Restaurando paquetes npm del frontend"
+echo "Restoring frontend npm packages"
 echo ""
 cd frontend
 npm install
 if [ $? -ne 0 ]; then
-    echo "Error al restaurar paquetes npm del frontend"
+    echo "Failed to restore frontend npm packages"
     exit $?
 fi
 
 echo ""
-echo "Iniciando frontend en modo desarrollo"
+echo "Building frontend"
 echo ""
-npm run dev &
+npm run build
 if [ $? -ne 0 ]; then
-    echo "Error al iniciar el frontend"
+    echo "Failed to build frontend"
     exit $?
 fi
 
@@ -23,10 +23,10 @@ cd ..
 . ./scripts/loadenv.sh
 
 echo ""
-echo "Iniciando backend con recarga automática"
+echo "Starting backend"
 echo ""
 ./.venv/bin/python -m quart run --port=50505 --host=127.0.0.1 --reload
 if [ $? -ne 0 ]; then
-    echo "Error al iniciar el backend"
+    echo "Failed to start backend"
     exit $?
 fi
