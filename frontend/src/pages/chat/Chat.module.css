@@ -395,6 +395,26 @@ a {
   border-radius: 4px;
 }
 
+.chatMessageStream::-webkit-scrollbar {
+  width: 10px;
+}
+
+.chatMessageStream::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+.chatMessageStream::-webkit-scrollbar-thumb {
+  background-color: #CED4DA;
+  border-radius: 10px;
+  border: 1px solid #CED4DA;
+}
+
+.chatMessageStream::-webkit-scrollbar-thumb:hover {
+  background-color: #999999B5;
+}
+
+
+
 
 @media (max-width: 480px) {
   .chatInput {

@@ -310,7 +310,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                     role="button">
                     <span>
                       {parsedAnswer.citations.length > 1
-                        ? parsedAnswer.citations.length + ' references'
+                        ? parsedAnswer.citations.length + ' referencias'
                         : '1 reference'}
                     </span>
                   </Text>
