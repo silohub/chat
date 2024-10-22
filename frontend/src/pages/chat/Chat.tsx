@@ -843,7 +843,7 @@ const Chat = () => {
                         </div>
 
                       </div>
-                      <h1 className={styles.chatEmptyStateTitle}>{ui?.chat_title}</h1>
+                      <h1 className={styles.chatEmptyStateTitle}>Haz una pregunta</h1>
                       <h2 className={styles.chatEmptyStateSubtitle}>{ui?.chat_description}</h2>
                     </Stack>
                 ) : (
