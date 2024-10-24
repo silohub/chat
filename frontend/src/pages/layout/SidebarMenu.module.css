@@ -116,6 +116,9 @@
     margin: 6px !important;
     font-weight: 600;
     font-size: 16px !important;
+    display: flex;
+    align-items: center;
+
 }
 
 .accordionHeaderCustom:hover {
@@ -156,3 +159,16 @@
     background-color: #999999B5;
 }
 
+.iconWrapper {
+    width: 20px; /* Mantiene el espacio reservado para el ícono */
+    height: 20px;
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.iconImage {
+    width: 100%;
+    height: 100%;
+}

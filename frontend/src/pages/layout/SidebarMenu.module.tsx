@@ -1,13 +1,13 @@
-import React, { useContext, useRef, useEffect, useState } from 'react';
-import { AppStateContext } from '../../state/AppProvider';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {AppStateContext} from '../../state/AppProvider';
 import MenuContent from './MenuContent';
 import styles from './SidebarMenu.module.css';
-import { Accordion, AccordionHeader, AccordionItem, AccordionPanel } from "@fluentui/react-components";
-import { Stack } from "@fluentui/react";
-import Contoso from "../../assets/Contoso.svg";
+import {Accordion, AccordionHeader, AccordionItem, AccordionPanel} from "@fluentui/react-components";
+import {Stack} from "@fluentui/react";
 // @ts-ignore
 import sectionsData from "../../assets/options.json";
 import headerLogo from "../../assets/logo-ctt.svg"
+
 interface SidebarMenuProps {
     isMenuOpen: boolean;
     toggleMenu: () => void;
@@ -15,13 +15,14 @@ interface SidebarMenuProps {
 
 interface MenuSection {
     title: string;
+    icon: string;
     options: string[];
 }
 
-const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu }) => {
+const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu}) => {
     // Acceder al contexto global
     // @ts-ignore
-    const { dispatch } = useContext(AppStateContext);
+    const {dispatch} = useContext(AppStateContext);
     const appStateContext = useContext(AppStateContext);
 
     const menuRef = useRef<HTMLDivElement | null>(null);
@@ -32,7 +33,7 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
 
     // Maneja la opción seleccionada en el menú
     const handleOptionClick = (option: string) => {
-        dispatch({ type: 'INJECT_QUESTION_TEXT', payload: option }); // Inyecta el texto en el estado global
+        dispatch({type: 'INJECT_QUESTION_TEXT', payload: option}); // Inyecta el texto en el estado global
         toggleMenu(); // Cierra el menú cuando se hace clic en una opción
     };
 
@@ -62,7 +63,7 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
 
     return (
         <aside ref={menuRef} className={`${styles.sidebar} ${isMenuOpen ? styles.open : ''}`}>
-            <Stack  horizontal horizontalAlign="center" verticalAlign="center">
+            <Stack horizontal horizontalAlign="center" verticalAlign="center">
                 <div className={styles.headerIconContainer}>
                     <img src={logo} className={styles.headerIcon} alt="Logo" aria-hidden="true"/>
                     <h1 className={styles.headerTitle}>{ui?.title}</h1>
@@ -75,15 +76,27 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
                             <AccordionItem key={index} value={section.title} className="accordionItemCustom">
                                 <AccordionHeader
                                     expandIconPosition="end"
-                                    className={styles.accordionHeaderCustom}>
+                                    className={styles.accordionHeaderCustom}
+                                >
+                                <span className={styles.iconWrapper}>
+                                  {section.icon && (
+                                      <img
+                                          src={section.icon}
+                                          alt={`${section.title} icon`}
+                                          className={styles.iconImage}
+                                      />
+                                  )}
+                                </span>
                                     {section.title}
                                 </AccordionHeader>
-                                <AccordionPanel >
+                                <AccordionPanel>
                                     <MenuContent section={section} onOptionClick={handleOptionClick} />
                                 </AccordionPanel>
                             </AccordionItem>
                         ))}
                     </Accordion>
+
+
                 </ul>
             </nav>
         </aside>
