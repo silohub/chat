@@ -7,6 +7,7 @@ import {Stack} from "@fluentui/react";
 // @ts-ignore
 import sectionsData from "../../assets/options.json";
 import headerLogo from "../../assets/logo-ctt.svg"
+import {ArrowUpRight20Filled} from "@fluentui/react-icons";
 
 interface SidebarMenuProps {
     isMenuOpen: boolean;
@@ -17,6 +18,11 @@ interface MenuSection {
     title: string;
     icon: string;
     options: string[];
+}
+
+interface Links {
+    title: string;
+    link: string;
 }
 
 const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu}) => {
@@ -30,6 +36,7 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
 
     const [logo, setLogo] = useState(''); // Estado para el logo
     const [menuSections, setMenuSections] = useState<MenuSection[]>([]); // Estado para las secciones del menú
+    const [links, setLinks] = useState<Links[]>([]);
 
     // Maneja la opción seleccionada en el menú
     const handleOptionClick = (option: string) => {
@@ -40,6 +47,7 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
     // Cargar secciones del archivo JSON al montar el componente
     useEffect(() => {
         setMenuSections(sectionsData.sections); // Asignar las secciones desde el archivo JSON
+        setLinks(sectionsData.links);
     }, []);
 
     // Cargar el logo cuando el estado de carga ha finalizado
@@ -69,6 +77,15 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
                     <h1 className={styles.headerTitle}>{ui?.title}</h1>
                 </div>
             </Stack>
+            <div className={styles.linksContainer}>
+                {links.map((link, index) => (
+                        <a className={styles.links} href={link.link} target="_blank" >
+                            <div>{link.title}</div>
+                            <ArrowUpRight20Filled />
+                        </a>
+                ))}
+
+            </div>
             <nav>
                 <ul>
                     <Accordion multiple collapsible>

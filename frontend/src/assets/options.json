@@ -54,5 +54,15 @@
         "¿Cuál es su política de sostenibilidad?"
       ]
     }
+  ],
+  "links": [
+     {
+      "title": "Titulo 1",
+       "link": "https://silohubdemo.blob.core.windows.net/chat/tomashnos.png"
+     },
+    {
+      "title": "Titulo 2",
+      "link": "https://silohubdemo.blob.core.windows.net/chat/tomashnos.png"
+    }
   ]
 }
