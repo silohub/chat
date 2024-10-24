@@ -133,14 +133,24 @@ export type UI = {
   show_chat_history_button?: boolean
 }
 
+export type B2CSettings = {
+  client_id: string
+  tenant_name: string
+  signup_signin_policy: string
+  password_reset_policy: string
+  authority: string
+  redirect_uri: string
+  known_authorities: string
+}
+
 export type FrontendSettings = {
   auth_enabled?: string | null
   feedback_enabled?: string | null
   ui?: UI
   sanitize_answer?: boolean
   oyd_enabled?: boolean
+  b2c?: B2CSettings
 }
-
 export enum Feedback {
   Neutral = 'neutral',
   Positive = 'positive',

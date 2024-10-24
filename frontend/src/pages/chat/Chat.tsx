@@ -53,7 +53,6 @@ const enum messageStatus {
 const Chat = () => {
   // Contexto y hooks de estado
   const appStateContext = useContext(AppStateContext)
-  const ui = appStateContext?.state.frontendSettings?.ui
   const AUTH_ENABLED = appStateContext?.state.frontendSettings?.auth_enabled
   const chatMessageStreamEnd = useRef<HTMLDivElement | null>(null)
 

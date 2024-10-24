@@ -87,6 +87,16 @@ export const appStateReducer = (state: AppState, action: Action): AppState => {
         ...state,
         injectedQuestionText: action.payload, // Actualizamos el estado con el nuevo texto
       };
+    case 'LOGIN':
+      return {
+        ...state,
+        isAuthenticated: true, // Actualiza el estado para indicar que el usuario está autenticado
+      };
+    case 'LOGOUT':
+      return {
+        ...state,
+        isAuthenticated: false, // Restablece el estado de autenticación
+      };
     default:
       return state;
   }
