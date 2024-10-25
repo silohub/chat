@@ -112,6 +112,7 @@ frontend_settings = {
         "authority": app_settings.b2c.authority,
         "redirect_uri": app_settings.b2c.redirect_uri,
         "known_authorities": app_settings.b2c.known_authorities,
+        "login_scope":  app_settings.b2c.login_scope,
     }
 }
 

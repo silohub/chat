@@ -771,6 +771,7 @@ class _B2CSettings(BaseSettings):
     authority: str
     redirect_uri: str
     known_authorities: str
+    login_scope: str
 
 class _AppSettings(BaseModel):
     base_settings: _BaseSettings = _BaseSettings()

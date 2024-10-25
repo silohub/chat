@@ -1,6 +1,14 @@
 import { chatHistorySampleData } from '../constants/chatHistory'
 
-import { ChatMessage, Conversation, ConversationRequest, CosmosDBHealth, CosmosDBStatus, UserInfo } from './models'
+import {
+  ChatMessage,
+  Conversation,
+  ConversationRequest,
+  CosmosDBHealth,
+  CosmosDBStatus,
+  FrontendSettings,
+  UserInfo
+} from './models'
 
 export async function conversationApi(options: ConversationRequest, abortSignal: AbortSignal): Promise<Response> {
   const response = await fetch('/conversation', {
@@ -313,20 +321,38 @@ export const historyEnsure = async (): Promise<CosmosDBHealth> => {
   return response
 }
 
-export const frontendSettings = async (): Promise<Response | null> => {
-  const response = await fetch('/frontend_settings', {
-    method: 'GET'
-  })
-    .then(res => {
-      return res.json()
-    })
-    .catch(_err => {
-      console.error('There was an issue fetching your data.')
-      return null
-    })
+export const frontendSettings = async (): Promise<FrontendSettings | null> => {
+  try {
+    const response = await fetch('/frontend_settings', {
+      method: 'GET',
+    });
 
-  return response
+    if (!response.ok) {
+      console.error('Failed to fetch frontend settings');
+      return null;
+    }
+
+    const data: FrontendSettings = await response.json();
+    return data;
+  } catch (error) {
+    console.error('There was an issue fetching your data:', error);
+    return null;
+  }
 }
+// export const frontendSettings = async (): Promise<Response | null> => {
+//   const response = await fetch('/frontend_settings', {
+//     method: 'GET'
+//   })
+//     .then(res => {
+//       return res.json()
+//     })
+//     .catch(_err => {
+//       console.error('There was an issue fetching your data.')
+//       return null
+//     })
+//
+//   return response
+// }
 export const historyMessageFeedback = async (messageId: string, feedback: string): Promise<Response> => {
   const response = await fetch('/history/message_feedback', {
     method: 'POST',

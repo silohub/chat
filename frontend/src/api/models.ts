@@ -141,6 +141,7 @@ export type B2CSettings = {
   authority: string
   redirect_uri: string
   known_authorities: string
+  login_scope: string
 }
 
 export type FrontendSettings = {
