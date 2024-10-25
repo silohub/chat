@@ -33,7 +33,7 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
 
     const menuRef = useRef<HTMLDivElement | null>(null);
     const ui = appStateContext?.state.frontendSettings?.ui;
-
+    const logout = appStateContext?.logout;
     const [logo, setLogo] = useState(''); // Estado para el logo
     const [menuSections, setMenuSections] = useState<MenuSection[]>([]); // Estado para las secciones del menú
     const [links, setLinks] = useState<Links[]>([]);
@@ -79,10 +79,10 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
             </Stack>
             <div className={styles.linksContainer}>
                 {links.map((link, index) => (
-                        <a className={styles.links} href={link.link} target="_blank" >
-                            <div>{link.title}</div>
-                            <ArrowUpRight20Filled />
-                        </a>
+                    <a className={styles.links} href={link.link} target="_blank">
+                        <div>{link.title}</div>
+                        <ArrowUpRight20Filled/>
+                    </a>
                 ))}
 
             </div>
@@ -107,12 +107,14 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
                                     {section.title}
                                 </AccordionHeader>
                                 <AccordionPanel>
-                                    <MenuContent section={section} onOptionClick={handleOptionClick} />
+                                    <MenuContent section={section} onOptionClick={handleOptionClick}/>
                                 </AccordionPanel>
                             </AccordionItem>
                         ))}
                     </Accordion>
-
+                    <div className={styles.linksContainer}>
+                        <button className={styles.authButton} onClick={logout}>Cerrar Sesión</button>
+                    </div>
 
                 </ul>
             </nav>

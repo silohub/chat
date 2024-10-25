@@ -198,3 +198,22 @@ a {
     margin-bottom: 6px;
     display: flex;
 }
+
+.authButton {
+    background-color: #183B57;
+    color: #ffffff;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s;
+    font-weight: bold;
+}
+
+.authButton:hover {
+    background-color: #b9cbe4;
+    color: #333333;
+}
