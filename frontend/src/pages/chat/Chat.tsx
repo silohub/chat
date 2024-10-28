@@ -40,7 +40,7 @@ import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel"
 import { AppStateContext } from "../../state/AppProvider";
 import { useBoolean } from "@fluentui/react-hooks";
 import headerLogo from "../../assets/logo-ctt-mini.svg"
-import primaryLogo from "../../assets/logo-tomas.svg"
+import primaryLogo from "../../assets/Logo-Tomas.svg"
 
 // Definición del estado del mensaje
 const enum messageStatus {

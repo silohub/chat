@@ -6,7 +6,10 @@ import {Accordion, AccordionHeader, AccordionItem, AccordionPanel} from "@fluent
 import {Stack} from "@fluentui/react";
 // @ts-ignore
 import sectionsData from "../../assets/options.json";
-import headerLogo from "../../assets/logo-ctt.svg"
+import headerLogo from "../../assets/Logo-ctt.svg"
+import primaryLogo from "../../assets/Logo-Tomas.svg"
+import stickers from "../../assets/Stickers.png"
+
 import {ArrowUpRight20Filled} from "@fluentui/react-icons";
 
 interface SidebarMenuProps {
@@ -35,6 +38,9 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
     const ui = appStateContext?.state.frontendSettings?.ui;
     const logout = appStateContext?.logout;
     const [logo, setLogo] = useState(''); // Estado para el logo
+    const [mainLogo, setMainLogo] = useState('')
+    const [stickerImg, setStikers] = useState('')
+
     const [menuSections, setMenuSections] = useState<MenuSection[]>([]); // Estado para las secciones del menú
     const [links, setLinks] = useState<Links[]>([]);
 
@@ -52,7 +58,11 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
 
     // Cargar el logo cuando el estado de carga ha finalizado
     useEffect(() => {
-        if (!appStateContext?.state.isLoading) setLogo(headerLogo);
+        if (!appStateContext?.state.isLoading) {
+            setLogo(headerLogo)
+            setMainLogo(primaryLogo)
+            setStikers(stickers)
+        }
     }, [appStateContext?.state.isLoading]);
 
     // Cerrar el menú cuando se hace clic fuera del área del menú
@@ -74,18 +84,19 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
             <Stack horizontal horizontalAlign="center" verticalAlign="center">
                 <div className={styles.headerIconContainer}>
                     <img src={logo} className={styles.headerIcon} alt="Logo" aria-hidden="true"/>
-                    <h1 className={styles.headerTitle}>{ui?.title}</h1>
+                    <img src={mainLogo} className={styles.headerIcon} alt="Logo" aria-hidden="true"/>
+                    {/*<h1 className={styles.headerTitle}>{ui?.title}</h1>*/}
                 </div>
             </Stack>
-            <div className={styles.linksContainer}>
-                {links.map((link, index) => (
-                    <a className={styles.links} href={link.link} target="_blank">
-                        <div>{link.title}</div>
-                        <ArrowUpRight20Filled/>
-                    </a>
-                ))}
+            {/*<div className={styles.linksContainer}>*/}
+            {/*    {links.map((link, index) => (*/}
+            {/*        <a className={styles.links} href={link.link} target="_blank">*/}
+            {/*            <div>{link.title}</div>*/}
+            {/*            <ArrowUpRight20Filled/>*/}
+            {/*        </a>*/}
+            {/*    ))}*/}
 
-            </div>
+            {/*</div>*/}
             <nav>
                 <ul>
                     <Accordion multiple collapsible>
@@ -112,12 +123,14 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
                             </AccordionItem>
                         ))}
                     </Accordion>
-                    <div className={styles.linksContainer}>
-                        <button className={styles.authButton} onClick={logout}>Cerrar Sesión</button>
-                    </div>
-
+                    {/*<div className={styles.linksContainer}>*/}
+                    {/*    <button className={styles.authButton} onClick={logout}>Cerrar Sesión</button>*/}
+                    {/*</div>*/}
                 </ul>
             </nav>
+            <div className={styles.stickers}>
+                <img src={stickerImg} className={styles.stickerImg} alt="Logo" aria-hidden="true"/>
+            </div>
         </aside>
     );
 };

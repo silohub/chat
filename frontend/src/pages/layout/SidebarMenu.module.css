@@ -2,7 +2,7 @@
 .sidebar {
     width: 250px;
     height: 100vh;
-    background-color: #183B57;
+    background-color: #24cccd;
     color: white;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
@@ -11,7 +11,8 @@
     top: 0;
     z-index: 1000;
     overflow-y: auto;
-
+    display: flex; /* Añadido */
+    flex-direction: column; /* Añadido */
 }
 
 /* Mantiene el menú abierto en pantallas grandes */
@@ -38,11 +39,14 @@
 }
 
 .headerIconContainer {
+    display: flex;
+    justify-content: space-between;
     background: #183B57;
-    height: 86px;
-    padding: 10px;
-    margin-top: 10px;
+    height: 70px;
+    width: 100%;
+    padding: 10px 24px 10px 24px;
     margin-bottom: 8px;
+    align-items: flex-end;
 }
 
 /* Estilos para el botón del acordeón */
@@ -137,7 +141,7 @@
 }
 
 .headerIcon {
-    height: 60px;
+    height: 40px;
     width: auto;
 }
 
@@ -216,4 +220,12 @@ a {
 .authButton:hover {
     background-color: #b9cbe4;
     color: #333333;
+}
+
+.stickers {
+    margin-top: auto;
+}
+
+.stickerImg {
+width: 240px;
 }

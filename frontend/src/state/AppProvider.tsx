@@ -65,7 +65,7 @@ const initialState: AppState = {
     isLoading: true,
     answerExecResult: {},
     injectedQuestionText: '',
-    isAuthenticated: false
+    isAuthenticated: true
 };
 
 // Combina la lógica de autenticación y de estado en un solo contexto
@@ -87,66 +87,75 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({children}) =>
     let loginScope = ''
     useEffect(() => {
         const getFrontendSettings = async () => {
-            const response = await frontendSettings();
-            if (response) {
-                dispatch({type: 'FETCH_FRONTEND_SETTINGS', payload: response});
+            try {
+                const response = await frontendSettings();
 
-                // Configuración MSAL
-                if (response.b2c) {
-                    const {
-                        client_id,
-                        tenant_name,
-                        signup_signin_policy,
-                        redirect_uri,
-                        known_authorities,
-                        login_scope
-                    } = response.b2c;
-                    loginScope = login_scope
-                    const msalConfig = {
-                        auth: {
-                            clientId: client_id,
-                            authority: `https://${tenant_name}.b2clogin.com/${tenant_name}.onmicrosoft.com/${signup_signin_policy}`,
-                            knownAuthorities: [known_authorities],
-                            redirectUri: redirect_uri || window.location.origin,
-                        },
-                        cache: {
-                            cacheLocation: "localStorage",
-                            storeAuthStateInCookie: false,
-                        },
-                    };
+                if (response && typeof response === "object") {
+                    dispatch({type: 'FETCH_FRONTEND_SETTINGS', payload: response});
 
-                    const msalApp = new PublicClientApplication(msalConfig);
+                    // Configuración MSAL
+                    if (response.b2c) {
+                        const {
+                            client_id,
+                            tenant_name,
+                            signup_signin_policy,
+                            redirect_uri,
+                            known_authorities,
+                            login_scope
+                        } = response.b2c;
 
-                    // Inicializa MSAL antes de manejar redirecciones
-                    await msalApp.initialize()
-                        .then(() => {
-                            return msalApp.handleRedirectPromise();
-                        })
-                        .then(response => {
-                            if (response && 'account' in response) {
-                                msalApp.setActiveAccount(response.account);
+                        loginScope = login_scope;
+
+                        const msalConfig = {
+                            auth: {
+                                clientId: client_id,
+                                authority: `https://${tenant_name}.b2clogin.com/${tenant_name}.onmicrosoft.com/${signup_signin_policy}`,
+                                knownAuthorities: [known_authorities],
+                                redirectUri: redirect_uri || window.location.origin,
+                            },
+                            cache: {
+                                cacheLocation: "localStorage",
+                                storeAuthStateInCookie: false,
+                            },
+                        };
+
+                        const msalApp = new PublicClientApplication(msalConfig);
+
+                        // Inicializa MSAL antes de manejar redirecciones
+                        await msalApp.initialize()
+                            .then(() => {
+                                return msalApp.handleRedirectPromise();
+                            })
+                            .then(response => {
+                                if (response && 'account' in response) {
+                                    msalApp.setActiveAccount(response.account);
+                                    dispatch({type: 'LOGIN'});
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error handling redirect promise:", error);
+                            });
+
+                        // Maneja eventos de autenticación después de la inicialización
+                        msalApp.addEventCallback(event => {
+                            if (event.eventType === EventType.LOGIN_SUCCESS && event.payload && 'account' in event.payload) {
+                                const account = event.payload.account as AccountInfo;
+                                msalApp.setActiveAccount(account);
                                 dispatch({type: 'LOGIN'});
+                            } else if (event.eventType === EventType.LOGOUT_SUCCESS) {
+                                dispatch({type: 'LOGOUT'});
                             }
-                        })
-                        .catch(error => {
-                            console.error("Error handling redirect promise:", error);
                         });
 
-                    // Maneja eventos de autenticación después de la inicialización
-                    msalApp.addEventCallback(event => {
-                        if (event.eventType === EventType.LOGIN_SUCCESS && event.payload && 'account' in event.payload) {
-                            const account = event.payload.account as AccountInfo;
-                            msalApp.setActiveAccount(account);
-                            dispatch({type: 'LOGIN'});
-                        } else if (event.eventType === EventType.LOGOUT_SUCCESS) {
-                            dispatch({type: 'LOGOUT'});
-                        }
-                    });
-
-                    setMsalInstance(msalApp);
+                        setMsalInstance(msalApp);
+                    }
+                } else {
+                    console.warn("Frontend settings could not be loaded properly.");
+                    dispatch({type: 'FETCH_FRONTEND_SETTINGS', payload: null});
                 }
-            } else {
-                console.error('Frontend settings could not be loaded.');
+            } catch (error) {
+                console.error("Error fetching frontend settings:", error);
+                dispatch({type: 'FETCH_FRONTEND_SETTINGS', payload: null});
             }
         };
         getFrontendSettings();
