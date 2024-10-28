@@ -39,8 +39,7 @@ import { QuestionInput } from "../../components/QuestionInput";
 import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
 import { AppStateContext } from "../../state/AppProvider";
 import { useBoolean } from "@fluentui/react-hooks";
-import headerLogo from "../../assets/logo-ctt-mini.svg"
-import primaryLogo from "../../assets/Logo-Tomas.svg"
+import headerLogo from "../../assets/Logo-ExpoCTT-joven.svg"
 
 // Definición del estado del mensaje
 const enum messageStatus {
@@ -72,7 +71,6 @@ const Chat = () => {
   const [hideErrorDialog, { toggle: toggleErrorDialog }] = useBoolean(true)
   const [errorMsg, setErrorMsg] = useState<ErrorMessage | null>()
   const [logo, setLogo] = useState('')
-  const [mainLogo, setMainLogo] = useState('')
 
   const [answerId, setAnswerId] = useState<string>('')
   // @ts-ignore
@@ -135,7 +133,6 @@ const Chat = () => {
   useEffect(() => {
     if (!appStateContext?.state.isLoading) {
       setLogo(headerLogo)
-      setMainLogo(primaryLogo)
     }
   }, [appStateContext?.state.isLoading])
 
@@ -836,14 +833,9 @@ const Chat = () => {
                     <Stack className={styles.chatEmptyState}>
                       <div className={styles.imageContainer}>
                         <img src={logo} className={styles.chatIcon} aria-hidden="true"/>
-                        <div className={styles.mainLogoContainer}>
-                          <span className={styles.mainText}>UNA INICIATIVA DE</span>
-                          <img src={mainLogo} className={styles.mainLogo} aria-hidden="true"/>
-                        </div>
-
                       </div>
-                      <h1 className={styles.chatEmptyStateTitle}>Haz una pregunta</h1>
-                      <h2 className={styles.chatEmptyStateSubtitle}>Este chatbot esta configurado para responder tus preguntas</h2>
+                      <h1 className={styles.chatEmptyStateTitle}>Preguntá lo que quieras</h1>
+                      <h2 className={styles.chatEmptyStateSubtitle}>Este chatbot está configurado para responder tus preguntas</h2>
                     </Stack>
                 ) : (
                     <div className={styles.chatMessageStream} style={{ marginBottom: isLoading ? '40px' : '0px' }} role="log">
