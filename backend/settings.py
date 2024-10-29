@@ -757,13 +757,29 @@ class _BaseSettings(BaseSettings):
     sanitize_answer: bool = False
     use_promptflow: bool = False
 
+class _B2CSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_prefix="B2C_",  # Prefijo para las variables de entorno B2C
+        env_file=DOTENV_PATH,  # Ruta al archivo .env
+        extra="ignore",  # Ignora variables adicionales que no estén definidas en esta clase
+        env_ignore_empty=True  # Ignora si alguna variable está vacía
+    )
+    client_id: str
+    tenant_name: str
+    signup_signin_policy: str
+    password_reset_policy: str
+    authority: str
+    redirect_uri: str
+    known_authorities: str
+    login_scope: str
 
 class _AppSettings(BaseModel):
     base_settings: _BaseSettings = _BaseSettings()
     azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
     search: _SearchCommonSettings = _SearchCommonSettings()
     ui: Optional[_UiSettings] = _UiSettings()
-    
+    b2c: Optional[_B2CSettings] = _B2CSettings()
+
     # Constructed properties
     chat_history: Optional[_ChatHistorySettings] = None
     datasource: Optional[DatasourcePayloadConstructor] = None

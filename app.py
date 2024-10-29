@@ -104,6 +104,16 @@ frontend_settings = {
     },
     "sanitize_answer": app_settings.base_settings.sanitize_answer,
     "oyd_enabled": app_settings.base_settings.datasource_type,
+    "b2c": {
+        "client_id": app_settings.b2c.client_id,
+        "tenant_name": app_settings.b2c.tenant_name,
+        "signup_signin_policy": app_settings.b2c.signup_signin_policy,
+        "password_reset_policy": app_settings.b2c.password_reset_policy,
+        "authority": app_settings.b2c.authority,
+        "redirect_uri": app_settings.b2c.redirect_uri,
+        "known_authorities": app_settings.b2c.known_authorities,
+        "login_scope":  app_settings.b2c.login_scope,
+    }
 }
 
 

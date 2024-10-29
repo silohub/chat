@@ -56,10 +56,10 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
   };
 
   const sendQuestion = () => {
+
     if (disabled || !question.trim()) {
       return
     }
-
     const questionTest: ChatMessage["content"] = base64Image ? [{ type: "text", text: question }, { type: "image_url", image_url: { url: base64Image } }] : question.toString();
 
     if (conversationId && questionTest !== undefined) {

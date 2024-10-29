@@ -25,6 +25,8 @@
   position: absolute;
   right: 24px;
   bottom: 20px;
+  cursor: pointer;
+
 }
 
 .questionInputSendButton {
