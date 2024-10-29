@@ -106,15 +106,15 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
                                     expandIconPosition="end"
                                     className={styles.accordionHeaderCustom}
                                 >
-                                <span className={styles.iconWrapper}>
-                                  {section.icon && (
-                                      <img
-                                          src={section.icon}
-                                          alt={`${section.title} icon`}
-                                          className={styles.iconImage}
-                                      />
-                                  )}
-                                </span>
+                                {/*<span className={styles.iconWrapper}>*/}
+                                {/*  {section.icon && (*/}
+                                {/*      <img*/}
+                                {/*          src={section.icon}*/}
+                                {/*          alt={`${section.title} icon`}*/}
+                                {/*          className={styles.iconImage}*/}
+                                {/*      />*/}
+                                {/*  )}*/}
+                                {/*</span>*/}
                                     {section.title}
                                 </AccordionHeader>
                                 <AccordionPanel>

@@ -12,13 +12,14 @@
     border-radius: 6px !important;
     text-align: left;
     cursor: pointer;
-    color: #fff;
+    color: #183B57;
     font-size: 14px;
+    font-weight: 600;
 }
 
 .menu-button:hover {
-    background-color: #b9cbe4;
-    color: #333333;
+    background-color: #183B57;
+    color: #fff !important;
 }
 
 .menu-button:focus {

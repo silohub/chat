@@ -65,7 +65,7 @@ const initialState: AppState = {
     isLoading: true,
     answerExecResult: {},
     injectedQuestionText: '',
-    isAuthenticated: true
+    isAuthenticated: false
 };
 
 // Combina la lógica de autenticación y de estado en un solo contexto
