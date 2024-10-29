@@ -70,7 +70,7 @@ const initialState: AppState = {
     isLoading: true,
     answerExecResult: {},
     injectedQuestionText: '',
-    isAuthenticated: true, //sessionStorage.getItem('isAuthenticated') === 'true',
+    isAuthenticated: sessionStorage.getItem('isAuthenticated') === 'true',
     userName: sessionStorage.getItem('userName'),
     userSurname: sessionStorage.getItem('userSurname'),
     userEmail: sessionStorage.getItem('userEmail'), // Recuperación del email desde sessionStorage
