@@ -848,3 +848,5 @@ class _AppSettings(BaseModel):
 
 
 app_settings = _AppSettings()
+# Verifica el valor de redirect_uri
+print(f"Redirect URI in use: {app_settings.b2c.redirect_uri}")
