@@ -165,7 +165,6 @@ export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }
                             known_authorities,
                             login_scope,
                         } = response.b2c;
-                        console.log("redirectUri", redirect_uri)
                         loginScope = login_scope;
 
                         const msalConfig = {
@@ -173,7 +172,7 @@ export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }
                                 clientId: client_id,
                                 authority: `https://${tenant_name}.b2clogin.com/${tenant_name}.onmicrosoft.com/${signup_signin_policy}`,
                                 knownAuthorities: [known_authorities],
-                                redirectUri: redirect_uri || window.location.origin,
+                                redirectUri: "https://demo-th-ctt.azurewebsites.net/"//redirect_uri || window.location.origin,
                             },
                             cache: {
                                 cacheLocation: 'localStorage',
