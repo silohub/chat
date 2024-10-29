@@ -29,6 +29,7 @@ export interface AppState {
     isAuthenticated: boolean;
     userName: string | null;
     userSurname: string | null;
+    userEmail: string | null; // Nuevo campo para el email
 }
 
 export type Action =
@@ -51,7 +52,7 @@ export type Action =
     | { type: 'GET_FEEDBACK_STATE'; payload: string }
     | { type: 'SET_ANSWER_EXEC_RESULT'; payload: { answerId: string; exec_result: [] } }
     | { type: 'INJECT_QUESTION_TEXT'; payload: string }
-    | { type: 'LOGIN'; payload: { userName: string; userSurname: string } }
+    | { type: 'LOGIN'; payload: { userName: string; userSurname: string; userEmail: string } }
     | { type: 'LOGOUT' };
 
 const initialState: AppState = {
@@ -69,9 +70,10 @@ const initialState: AppState = {
     isLoading: true,
     answerExecResult: {},
     injectedQuestionText: '',
-    isAuthenticated: sessionStorage.getItem('isAuthenticated') === 'true',
+    isAuthenticated: true, //sessionStorage.getItem('isAuthenticated') === 'true',
     userName: sessionStorage.getItem('userName'),
     userSurname: sessionStorage.getItem('userSurname'),
+    userEmail: sessionStorage.getItem('userEmail'), // Recuperación del email desde sessionStorage
 };
 
 export const AppStateContext = createContext<{
@@ -172,7 +174,7 @@ export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }
                                 clientId: client_id,
                                 authority: `https://${tenant_name}.b2clogin.com/${tenant_name}.onmicrosoft.com/${signup_signin_policy}`,
                                 knownAuthorities: [known_authorities],
-                                redirectUri: "https://demo-th-ctt.azurewebsites.net/"//redirect_uri || window.location.origin,
+                                redirectUri: redirect_uri || window.location.origin,
                             },
                             cache: {
                                 cacheLocation: 'localStorage',
@@ -189,16 +191,18 @@ export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }
                                 if (response && 'account' in response) {
                                     const givenName = String(response.account?.idTokenClaims?.given_name ?? '');
                                     const familyName = String(response.account?.idTokenClaims?.family_name ?? '');
+                                    const email = String(response.account?.idTokenClaims?.email ?? '');
                                     msalApp.setActiveAccount(response.account);
 
                                     // Guardar datos en sessionStorage
                                     sessionStorage.setItem('isAuthenticated', 'true');
                                     sessionStorage.setItem('userName', givenName);
                                     sessionStorage.setItem('userSurname', familyName);
+                                    sessionStorage.setItem('userEmail', email); // Almacena el email
 
                                     dispatch({
                                         type: 'LOGIN',
-                                        payload: { userName: givenName, userSurname: familyName },
+                                        payload: { userName: givenName, userSurname: familyName, userEmail: email },
                                     });
                                 }
                             })
@@ -211,6 +215,7 @@ export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }
                                 const account = event.payload.account as AccountInfo;
                                 const givenName = String(account?.idTokenClaims?.given_name ?? '');
                                 const familyName = String(account?.idTokenClaims?.family_name ?? '');
+                                const email = String(account?.idTokenClaims?.email ?? '');
 
                                 msalApp.setActiveAccount(account);
 
@@ -218,16 +223,18 @@ export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }
                                 sessionStorage.setItem('isAuthenticated', 'true');
                                 sessionStorage.setItem('userName', givenName);
                                 sessionStorage.setItem('userSurname', familyName);
+                                sessionStorage.setItem('userEmail', email); // Almacena el email
 
                                 dispatch({
                                     type: 'LOGIN',
-                                    payload: { userName: givenName, userSurname: familyName },
+                                    payload: { userName: givenName, userSurname: familyName, userEmail: email },
                                 });
                             } else if (event.eventType === EventType.LOGOUT_SUCCESS) {
                                 // Limpiar datos de sessionStorage
                                 sessionStorage.removeItem('isAuthenticated');
                                 sessionStorage.removeItem('userName');
                                 sessionStorage.removeItem('userSurname');
+                                sessionStorage.removeItem('userEmail'); // Remueve el email
 
                                 dispatch({ type: 'LOGOUT' });
                             }

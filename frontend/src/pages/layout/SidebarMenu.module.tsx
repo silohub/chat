@@ -1,17 +1,17 @@
 // SidebarMenuModule.tsx
 
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { AppStateContext } from '../../state/AppProvider';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {AppStateContext} from '../../state/AppProvider';
 import MenuContent from './MenuContent';
 import styles from './SidebarMenu.module.css';
-import { Accordion, AccordionHeader, AccordionItem, AccordionPanel } from "@fluentui/react-components";
-import { Stack } from "@fluentui/react";
+import {Accordion, AccordionHeader, AccordionItem, AccordionPanel} from "@fluentui/react-components";
+import {Stack} from "@fluentui/react";
 // @ts-ignore
 import sectionsData from "../../assets/options.json";
 import headerLogo from "../../assets/Logo-ctt.svg";
 import primaryLogo from "../../assets/Logo-Tomas.svg";
 import stickers from "../../assets/Stickers.png";
-import { ArrowUpRight20Filled } from "@fluentui/react-icons";
+import {Person20Filled, Power20Filled} from "@fluentui/react-icons";
 
 interface SidebarMenuProps {
     isMenuOpen: boolean;
@@ -29,11 +29,11 @@ interface Links {
     link: string;
 }
 
-const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu }) => {
+const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu}) => {
     // Acceder al contexto global
     const appStateContext = useContext(AppStateContext);
-    const { state, dispatch } = appStateContext || {};
-    const { userName, userSurname } = state || {}; // Extraer nombre y apellido
+    const {state, dispatch} = appStateContext || {};
+    const {userName, userSurname, userEmail} = state || {}; // Extraer nombre y apellido
     const logout = appStateContext?.logout;
 
     const menuRef = useRef<HTMLDivElement | null>(null);
@@ -46,14 +46,14 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
 
     // Maneja la opción seleccionada en el menú
     const handleOptionClick = (option: string) => {
-        dispatch?.({ type: 'INJECT_QUESTION_TEXT', payload: option }); // Inyecta el texto en el estado global
+        dispatch?.({type: 'INJECT_QUESTION_TEXT', payload: option}); // Inyecta el texto en el estado global
         toggleMenu(); // Cierra el menú cuando se hace clic en una opción
     };
 
     // Cargar secciones del archivo JSON al montar el componente
     useEffect(() => {
         setMenuSections(sectionsData.sections); // Asignar las secciones desde el archivo JSON
-        setLinks(sectionsData.links);
+        // setLinks(sectionsData.links);
     }, []);
 
     // Cargar el logo cuando el estado de carga ha finalizado
@@ -97,7 +97,13 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu 
             {/*    ))}*/}
             {/*</div>*/}
             <div className={styles.userInfo}>
-                <p onClick={logout} className={styles.userName}>{userName} {userSurname}</p> {/* Muestra nombre y apellido */}
+                {userName && userSurname ?
+                    <p className={styles.userName}>{userName} {userSurname}</p> :
+                    <p className={styles.userName}>{userEmail} </p>}
+                <div className={styles.optionsContainer}>
+                    <span className={styles.options}><Person20Filled/>Perfil</span>
+                    <span className={styles.options} onClick={logout}><Power20Filled/>Salir</span>
+                </div>
             </div>
             <nav>
                 <ul>

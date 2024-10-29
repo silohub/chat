@@ -1,68 +1,47 @@
 {
   "sections": [
     {
+      "title": "Expo CTT Joven",
+      "icon": "",
+      "options": [
+        "¿Qué hay en la expo?",
+        "¿Cuál es el objetivo de la expo?"
+      ]
+    },
+    {
+      "title": "Sustentabilidad",
+      "icon": "",
+      "options": [
+        "¿Qué es?",
+        "¿Qué hace la huella de carbono?",
+        "¿Cuáles son las buenas prácticas?",
+        "¿Qué necesito para poder certificar?"
+      ]
+    },
+    {
+      "title": "Emprendurismo",
+      "icon": "",
+      "options": [
+        "¿Qué significa?",
+        "¿Qué debo hacer para ser un emprendedor?"
+      ]
+    },
+    {
+      "title": "Tecnología e Innovación",
+      "icon": "",
+      "options": [
+        "¿Qué tecnologías se exponen?",
+        "¿Qué empresas nos acompañan hoy?"
+      ]
+    },
+    {
       "title": "Tomás Hermanos",
-      "icon": "https://silohubdemo.blob.core.windows.net/chat/tomashnos.png",
+      "icon": "",
       "options": [
         "¿Quién es Tomás Hermanos?",
         "¿Cómo me puedo contactar?",
         "¿Dónde están ubicados?"
       ]
-    },
-    {
-      "title": "Industria Cárdenas",
-      "icon": "",
-      "options": [
-        "¿Qué productos ofrece Industria Cárdenas?",
-        "¿Cómo puedo agendar una visita?",
-        "¿Cuáles son los horarios de atención?"
-      ]
-    },
-    {
-      "title": "Soluciones Pérez",
-      "icon": "",
-      "options": [
-        "¿Qué servicios ofrece Soluciones Pérez?",
-        "¿Cómo me registro en la plataforma?",
-        "¿Ofrecen soporte técnico?"
-      ]
-    },
-    {
-      "title": "GlobalTech",
-      "icon": "",
-      "options": [
-        "¿Qué tecnologías maneja GlobalTech?",
-        "¿Dónde puedo encontrar más información sobre sus productos?",
-        "¿Cuál es el tiempo de respuesta del soporte?"
-      ]
-    },
-    {
-      "title": "Transportes Hernández",
-      "icon": "",
-      "options": [
-        "¿Cuáles son las rutas de Transportes Hernández?",
-        "¿Cómo puedo rastrear un envío?",
-        "¿Ofrecen envíos internacionales?"
-      ]
-    },
-    {
-      "title": "Grupo Fénix",
-      "icon": "",
-      "options": [
-        "¿Qué tipo de proyectos maneja Grupo Fénix?",
-        "¿Cómo puedo aplicar para una vacante?",
-        "¿Cuál es su política de sostenibilidad?"
-      ]
-    }
-  ],
-  "links": [
-     {
-      "title": "Titulo 1",
-       "link": "https://silohubdemo.blob.core.windows.net/chat/tomashnos.png"
-     },
-    {
-      "title": "Titulo 2",
-      "link": "https://silohubdemo.blob.core.windows.net/chat/tomashnos.png"
     }
   ]
 }
