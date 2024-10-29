@@ -165,7 +165,7 @@ export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }
                             known_authorities,
                             login_scope,
                         } = response.b2c;
-
+                        console.log("redirectUri", redirect_uri)
                         loginScope = login_scope;
 
                         const msalConfig = {
