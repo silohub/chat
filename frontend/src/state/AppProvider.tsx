@@ -1,5 +1,5 @@
 // AppStateProvider.tsx
-import React, {createContext, ReactNode, useEffect, useReducer, useState} from 'react';
+import React, { createContext, ReactNode, useEffect, useReducer, useState } from 'react';
 import {
     ChatHistoryLoadingState,
     Conversation,
@@ -8,9 +8,11 @@ import {
     Feedback,
     FrontendSettings,
     frontendSettings,
+    historyEnsure,
+    historyList,
 } from '../api';
-import {AccountInfo, EventType, PublicClientApplication} from '@azure/msal-browser';
-import {appStateReducer} from './AppReducer';
+import { AccountInfo, EventType, PublicClientApplication } from '@azure/msal-browser';
+import { appStateReducer } from './AppReducer';
 
 export interface AppState {
     isChatHistoryOpen: boolean;
@@ -25,6 +27,8 @@ export interface AppState {
     answerExecResult: { [answerId: string]: [] };
     injectedQuestionText: string;
     isAuthenticated: boolean;
+    userName: string | null;
+    userSurname: string | null;
 }
 
 export type Action =
@@ -42,12 +46,12 @@ export type Action =
     | { type: 'FETCH_FRONTEND_SETTINGS'; payload: FrontendSettings | null }
     | {
     type: 'SET_FEEDBACK_STATE';
-    payload: { answerId: string; feedback: Feedback.Positive | Feedback.Negative | Feedback.Neutral }
+    payload: { answerId: string; feedback: Feedback.Positive | Feedback.Negative | Feedback.Neutral };
 }
     | { type: 'GET_FEEDBACK_STATE'; payload: string }
     | { type: 'SET_ANSWER_EXEC_RESULT'; payload: { answerId: string; exec_result: [] } }
     | { type: 'INJECT_QUESTION_TEXT'; payload: string }
-    | { type: 'LOGIN' }
+    | { type: 'LOGIN'; payload: { userName: string; userSurname: string } }
     | { type: 'LOGOUT' };
 
 const initialState: AppState = {
@@ -65,10 +69,11 @@ const initialState: AppState = {
     isLoading: true,
     answerExecResult: {},
     injectedQuestionText: '',
-    isAuthenticated: false
+    isAuthenticated: sessionStorage.getItem('isAuthenticated') === 'true',
+    userName: sessionStorage.getItem('userName'),
+    userSurname: sessionStorage.getItem('userSurname'),
 };
 
-// Combina la lógica de autenticación y de estado en un solo contexto
 export const AppStateContext = createContext<{
     state: AppState;
     dispatch: React.Dispatch<Action>;
@@ -77,23 +82,80 @@ export const AppStateContext = createContext<{
     resetPassword: () => void;
 } | undefined>(undefined);
 
-type AppStateProviderProps = {
-    children: ReactNode;
-};
-
-export const AppStateProvider: React.FC<AppStateProviderProps> = ({children}) => {
+export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [state, dispatch] = useReducer(appStateReducer, initialState);
     const [msalInstance, setMsalInstance] = useState<PublicClientApplication | null>(null);
-    let loginScope = ''
+    let loginScope = '';
+
+    // Nueva función fetchChatHistory
+    const fetchChatHistory = async (offset = 0): Promise<Conversation[] | null> => {
+        const result = await historyList(offset)
+            .then((response) => {
+                if (response) {
+                    dispatch({ type: 'FETCH_CHAT_HISTORY', payload: response });
+                } else {
+                    dispatch({ type: 'FETCH_CHAT_HISTORY', payload: null });
+                }
+                return response;
+            })
+            .catch((_err) => {
+                dispatch({ type: 'UPDATE_CHAT_HISTORY_LOADING_STATE', payload: ChatHistoryLoadingState.Fail });
+                dispatch({ type: 'FETCH_CHAT_HISTORY', payload: null });
+                console.error('There was an issue fetching your data.');
+                return null;
+            });
+        return result;
+    };
+
+    // Nueva función getHistoryEnsure
+    const getHistoryEnsure = async () => {
+        dispatch({ type: 'UPDATE_CHAT_HISTORY_LOADING_STATE', payload: ChatHistoryLoadingState.Loading });
+        historyEnsure()
+            .then((response) => {
+                if (response?.cosmosDB) {
+                    fetchChatHistory()
+                        .then((res) => {
+                            if (res) {
+                                dispatch({ type: 'UPDATE_CHAT_HISTORY_LOADING_STATE', payload: ChatHistoryLoadingState.Success });
+                                dispatch({ type: 'SET_COSMOSDB_STATUS', payload: response });
+                            } else {
+                                dispatch({ type: 'UPDATE_CHAT_HISTORY_LOADING_STATE', payload: ChatHistoryLoadingState.Fail });
+                                dispatch({
+                                    type: 'SET_COSMOSDB_STATUS',
+                                    payload: { cosmosDB: false, status: CosmosDBStatus.NotWorking },
+                                });
+                            }
+                        })
+                        .catch((_err) => {
+                            dispatch({ type: 'UPDATE_CHAT_HISTORY_LOADING_STATE', payload: ChatHistoryLoadingState.Fail });
+                            dispatch({
+                                type: 'SET_COSMOSDB_STATUS',
+                                payload: { cosmosDB: false, status: CosmosDBStatus.NotWorking },
+                            });
+                        });
+                } else {
+                    dispatch({ type: 'UPDATE_CHAT_HISTORY_LOADING_STATE', payload: ChatHistoryLoadingState.Fail });
+                    dispatch({ type: 'SET_COSMOSDB_STATUS', payload: response });
+                }
+            })
+            .catch((_err) => {
+                dispatch({ type: 'UPDATE_CHAT_HISTORY_LOADING_STATE', payload: ChatHistoryLoadingState.Fail });
+                dispatch({ type: 'SET_COSMOSDB_STATUS', payload: { cosmosDB: false, status: CosmosDBStatus.NotConfigured } });
+            });
+    };
+
+    useEffect(() => {
+        getHistoryEnsure(); // Llamada a getHistoryEnsure en useEffect
+    }, []);
+
     useEffect(() => {
         const getFrontendSettings = async () => {
             try {
                 const response = await frontendSettings();
 
-                if (response && typeof response === "object") {
-                    dispatch({type: 'FETCH_FRONTEND_SETTINGS', payload: response});
+                if (response && typeof response === 'object') {
+                    dispatch({ type: 'FETCH_FRONTEND_SETTINGS', payload: response });
 
-                    // Configuración MSAL
                     if (response.b2c) {
                         const {
                             client_id,
@@ -101,7 +163,7 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({children}) =>
                             signup_signin_policy,
                             redirect_uri,
                             known_authorities,
-                            login_scope
+                            login_scope,
                         } = response.b2c;
 
                         loginScope = login_scope;
@@ -114,84 +176,105 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({children}) =>
                                 redirectUri: redirect_uri || window.location.origin,
                             },
                             cache: {
-                                cacheLocation: "localStorage",
+                                cacheLocation: 'localStorage',
                                 storeAuthStateInCookie: false,
                             },
                         };
 
                         const msalApp = new PublicClientApplication(msalConfig);
 
-                        // Inicializa MSAL antes de manejar redirecciones
-                        await msalApp.initialize()
-                            .then(() => {
-                                return msalApp.handleRedirectPromise();
-                            })
-                            .then(response => {
+                        await msalApp
+                            .initialize()
+                            .then(() => msalApp.handleRedirectPromise())
+                            .then((response) => {
                                 if (response && 'account' in response) {
+                                    const givenName = String(response.account?.idTokenClaims?.given_name ?? '');
+                                    const familyName = String(response.account?.idTokenClaims?.family_name ?? '');
                                     msalApp.setActiveAccount(response.account);
-                                    dispatch({type: 'LOGIN'});
+
+                                    // Guardar datos en sessionStorage
+                                    sessionStorage.setItem('isAuthenticated', 'true');
+                                    sessionStorage.setItem('userName', givenName);
+                                    sessionStorage.setItem('userSurname', familyName);
+
+                                    dispatch({
+                                        type: 'LOGIN',
+                                        payload: { userName: givenName, userSurname: familyName },
+                                    });
                                 }
                             })
-                            .catch(error => {
-                                console.error("Error handling redirect promise:", error);
+                            .catch((error) => {
+                                console.error('Error handling redirect promise:', error);
                             });
 
-                        // Maneja eventos de autenticación después de la inicialización
-                        msalApp.addEventCallback(event => {
+                        msalApp.addEventCallback((event) => {
                             if (event.eventType === EventType.LOGIN_SUCCESS && event.payload && 'account' in event.payload) {
                                 const account = event.payload.account as AccountInfo;
+                                const givenName = String(account?.idTokenClaims?.given_name ?? '');
+                                const familyName = String(account?.idTokenClaims?.family_name ?? '');
+
                                 msalApp.setActiveAccount(account);
-                                dispatch({type: 'LOGIN'});
+
+                                // Guardar datos en sessionStorage
+                                sessionStorage.setItem('isAuthenticated', 'true');
+                                sessionStorage.setItem('userName', givenName);
+                                sessionStorage.setItem('userSurname', familyName);
+
+                                dispatch({
+                                    type: 'LOGIN',
+                                    payload: { userName: givenName, userSurname: familyName },
+                                });
                             } else if (event.eventType === EventType.LOGOUT_SUCCESS) {
-                                dispatch({type: 'LOGOUT'});
+                                // Limpiar datos de sessionStorage
+                                sessionStorage.removeItem('isAuthenticated');
+                                sessionStorage.removeItem('userName');
+                                sessionStorage.removeItem('userSurname');
+
+                                dispatch({ type: 'LOGOUT' });
                             }
                         });
 
                         setMsalInstance(msalApp);
                     }
-                } else {
-                    console.warn("Frontend settings could not be loaded properly.");
-                    dispatch({type: 'FETCH_FRONTEND_SETTINGS', payload: null});
                 }
             } catch (error) {
-                console.error("Error fetching frontend settings:", error);
-                dispatch({type: 'FETCH_FRONTEND_SETTINGS', payload: null});
+                console.error('Error fetching frontend settings:', error);
+                dispatch({ type: 'FETCH_FRONTEND_SETTINGS', payload: null });
             }
         };
         getFrontendSettings();
     }, []);
 
-
     const login = () => {
         if (msalInstance) {
-            msalInstance.loginRedirect({scopes: [loginScope]}).catch(error => {
-                console.error("Login error:", error);
+            msalInstance.loginRedirect({ scopes: [loginScope] }).catch((error) => {
+                console.error('Login error:', error);
             });
         }
     };
 
     const logout = () => {
         if (msalInstance) {
-            msalInstance.logoutRedirect().catch(error => {
-                console.error("Logout error:", error);
+            msalInstance.logoutRedirect().catch((error) => {
+                console.error('Logout error:', error);
             });
         }
     };
 
     const resetPassword = () => {
-        const {tenant_name, password_reset_policy} = state.frontendSettings?.b2c || {};
+        const { tenant_name, password_reset_policy } = state.frontendSettings?.b2c || {};
         if (msalInstance && tenant_name && password_reset_policy) {
             msalInstance.loginRedirect({
                 authority: `https://${tenant_name}.b2clogin.com/${tenant_name}.onmicrosoft.com/${password_reset_policy}`,
-                scopes: ["User.Read"],
-            }).catch(error => {
-                console.error("Password reset error:", error);
+                scopes: ['User.Read'],
+            }).catch((error) => {
+                console.error('Password reset error:', error);
             });
         }
     };
 
     return (
-        <AppStateContext.Provider value={{state, dispatch, login, logout, resetPassword}}>
+        <AppStateContext.Provider value={{ state, dispatch, login, logout, resetPassword }}>
             {children}
         </AppStateContext.Provider>
     );

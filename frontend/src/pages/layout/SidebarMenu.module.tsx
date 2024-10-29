@@ -1,16 +1,17 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
-import {AppStateContext} from '../../state/AppProvider';
+// SidebarMenuModule.tsx
+
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { AppStateContext } from '../../state/AppProvider';
 import MenuContent from './MenuContent';
 import styles from './SidebarMenu.module.css';
-import {Accordion, AccordionHeader, AccordionItem, AccordionPanel} from "@fluentui/react-components";
-import {Stack} from "@fluentui/react";
+import { Accordion, AccordionHeader, AccordionItem, AccordionPanel } from "@fluentui/react-components";
+import { Stack } from "@fluentui/react";
 // @ts-ignore
 import sectionsData from "../../assets/options.json";
-import headerLogo from "../../assets/Logo-ctt.svg"
-import primaryLogo from "../../assets/Logo-Tomas.svg"
-import stickers from "../../assets/Stickers.png"
-
-import {ArrowUpRight20Filled} from "@fluentui/react-icons";
+import headerLogo from "../../assets/Logo-ctt.svg";
+import primaryLogo from "../../assets/Logo-Tomas.svg";
+import stickers from "../../assets/Stickers.png";
+import { ArrowUpRight20Filled } from "@fluentui/react-icons";
 
 interface SidebarMenuProps {
     isMenuOpen: boolean;
@@ -28,25 +29,24 @@ interface Links {
     link: string;
 }
 
-const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu}) => {
+const SidebarMenuModule: React.FC<SidebarMenuProps> = ({ isMenuOpen, toggleMenu }) => {
     // Acceder al contexto global
-    // @ts-ignore
-    const {dispatch} = useContext(AppStateContext);
     const appStateContext = useContext(AppStateContext);
+    const { state, dispatch } = appStateContext || {};
+    const { userName, userSurname } = state || {}; // Extraer nombre y apellido
+    const logout = appStateContext?.logout;
 
     const menuRef = useRef<HTMLDivElement | null>(null);
-    const ui = appStateContext?.state.frontendSettings?.ui;
-    const logout = appStateContext?.logout;
+    const ui = state?.frontendSettings?.ui;
     const [logo, setLogo] = useState(''); // Estado para el logo
-    const [mainLogo, setMainLogo] = useState('')
-    const [stickerImg, setStikers] = useState('')
-
+    const [mainLogo, setMainLogo] = useState('');
+    const [stickerImg, setStickers] = useState('');
     const [menuSections, setMenuSections] = useState<MenuSection[]>([]); // Estado para las secciones del menú
     const [links, setLinks] = useState<Links[]>([]);
 
     // Maneja la opción seleccionada en el menú
     const handleOptionClick = (option: string) => {
-        dispatch({type: 'INJECT_QUESTION_TEXT', payload: option}); // Inyecta el texto en el estado global
+        dispatch?.({ type: 'INJECT_QUESTION_TEXT', payload: option }); // Inyecta el texto en el estado global
         toggleMenu(); // Cierra el menú cuando se hace clic en una opción
     };
 
@@ -58,12 +58,12 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
 
     // Cargar el logo cuando el estado de carga ha finalizado
     useEffect(() => {
-        if (!appStateContext?.state.isLoading) {
-            setLogo(headerLogo)
-            setMainLogo(primaryLogo)
-            setStikers(stickers)
+        if (!state?.isLoading) {
+            setLogo(headerLogo);
+            setMainLogo(primaryLogo);
+            setStickers(stickers);
         }
-    }, [appStateContext?.state.isLoading]);
+    }, [state?.isLoading]);
 
     // Cerrar el menú cuando se hace clic fuera del área del menú
     useEffect(() => {
@@ -85,7 +85,7 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
                 <div className={styles.headerIconContainer}>
                     <img src={logo} className={styles.headerIcon} alt="Logo" aria-hidden="true"/>
                     <img src={mainLogo} className={styles.headerIcon} alt="Logo" aria-hidden="true"/>
-                    {/*<h1 className={styles.headerTitle}>{ui?.title}</h1>*/}
+
                 </div>
             </Stack>
             {/*<div className={styles.linksContainer}>*/}
@@ -95,8 +95,10 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
             {/*            <ArrowUpRight20Filled/>*/}
             {/*        </a>*/}
             {/*    ))}*/}
-
             {/*</div>*/}
+            <div className={styles.userInfo}>
+                <p onClick={logout} className={styles.userName}>{userName} {userSurname}</p> {/* Muestra nombre y apellido */}
+            </div>
             <nav>
                 <ul>
                     <Accordion multiple collapsible>
@@ -106,15 +108,15 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
                                     expandIconPosition="end"
                                     className={styles.accordionHeaderCustom}
                                 >
-                                {/*<span className={styles.iconWrapper}>*/}
-                                {/*  {section.icon && (*/}
-                                {/*      <img*/}
-                                {/*          src={section.icon}*/}
-                                {/*          alt={`${section.title} icon`}*/}
-                                {/*          className={styles.iconImage}*/}
-                                {/*      />*/}
-                                {/*  )}*/}
-                                {/*</span>*/}
+                                    {/*<span className={styles.iconWrapper}>*/}
+                                    {/*  {section.icon && (*/}
+                                    {/*      <img*/}
+                                    {/*          src={section.icon}*/}
+                                    {/*          alt={`${section.title} icon`}*/}
+                                    {/*          className={styles.iconImage}*/}
+                                    {/*      />*/}
+                                    {/*  )}*/}
+                                    {/*</span>*/}
                                     {section.title}
                                 </AccordionHeader>
                                 <AccordionPanel>
