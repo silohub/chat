@@ -82,6 +82,7 @@ export const AppStateContext = createContext<{
     login: () => void;
     logout: () => void;
     resetPassword: () => void;
+    editProfile: () => void;
 } | undefined>(undefined);
 
 export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -279,8 +280,20 @@ export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }
         }
     };
 
+    const editProfile = () => {
+        const { tenant_name, edit_profile_policy } = state.frontendSettings?.b2c || {};
+        if (msalInstance && tenant_name && edit_profile_policy) {
+            msalInstance.loginRedirect({
+                authority: `https://${tenant_name}.b2clogin.com/${tenant_name}.onmicrosoft.com/${edit_profile_policy}`,
+                scopes: ["User.Read"],
+            }).catch(error => {
+                console.error("Profile edit error:", error);
+            });
+        }
+    };
+
     return (
-        <AppStateContext.Provider value={{ state, dispatch, login, logout, resetPassword }}>
+        <AppStateContext.Provider value={{ state, dispatch, login, logout, resetPassword, editProfile }}>
             {children}
         </AppStateContext.Provider>
     );

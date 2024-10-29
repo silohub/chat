@@ -138,6 +138,7 @@ export type B2CSettings = {
   tenant_name: string
   signup_signin_policy: string
   password_reset_policy: string
+  edit_profile_policy: string
   authority: string
   redirect_uri: string
   known_authorities: string

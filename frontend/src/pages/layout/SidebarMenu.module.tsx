@@ -79,6 +79,12 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
         };
     }, [isMenuOpen, toggleMenu]);
 
+    const handleEditProfile = () => {
+        if (appStateContext?.editProfile) {
+            appStateContext.editProfile();
+        }
+    };
+
     return (
         <aside ref={menuRef} className={`${styles.sidebar} ${isMenuOpen ? styles.open : ''}`}>
             <Stack horizontal horizontalAlign="center" verticalAlign="center">
@@ -101,7 +107,7 @@ const SidebarMenuModule: React.FC<SidebarMenuProps> = ({isMenuOpen, toggleMenu})
                     <p className={styles.userName}>{userName} {userSurname}</p> :
                     <p className={styles.userName}>{userEmail} </p>}
                 <div className={styles.optionsContainer}>
-                    <span className={styles.options}><Person20Filled/>Perfil</span>
+                    <span className={styles.options} onClick={handleEditProfile}><Person20Filled/>Perfil</span>
                     <span className={styles.options} onClick={logout}><Power20Filled/>Salir</span>
                 </div>
             </div>

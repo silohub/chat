@@ -1,7 +1,10 @@
-import os
 import json
 import logging
+import os
 from abc import ABC, abstractmethod
+from typing import List, Literal, Optional
+from typing_extensions import Self
+
 from pydantic import (
     BaseModel,
     confloat,
@@ -16,9 +19,8 @@ from pydantic import (
 )
 from pydantic.alias_generators import to_snake
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List, Literal, Optional
-from typing_extensions import Self
 from quart import Request
+
 from backend.utils import parse_multi_columns, generateFilterString
 
 DOTENV_PATH = os.environ.get(
@@ -91,7 +93,7 @@ class _AzureOpenAIFunction(BaseModel):
 class _AzureOpenAITool(BaseModel):
     type: Literal['function'] = 'function'
     function: _AzureOpenAIFunction
-    
+
 
 class _AzureOpenAISettings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -100,7 +102,7 @@ class _AzureOpenAISettings(BaseSettings):
         extra='ignore',
         env_ignore_empty=True
     )
-    
+
     model: str
     key: Optional[str] = None
     resource: Optional[str] = None
@@ -123,7 +125,7 @@ class _AzureOpenAISettings(BaseSettings):
     embedding_endpoint: Optional[str] = None
     embedding_key: Optional[str] = None
     embedding_name: Optional[str] = None
-    
+
     @field_validator('tools', mode='before')
     @classmethod
     def deserialize_tools(cls, tools_json_str: str) -> List[_AzureOpenAITool]:
@@ -133,12 +135,12 @@ class _AzureOpenAISettings(BaseSettings):
                 return _AzureOpenAITool(**tools_dict)
             except json.JSONDecodeError:
                 logging.warning("No valid tool definition found in the environment.  If you believe this to be in error, please check that the value of AZURE_OPENAI_TOOLS is a valid JSON string.")
-            
+
             except ValidationError as e:
                 logging.warning(f"An error occurred while deserializing the tool definition - {str(e)}")
-            
+
         return None
-    
+
     @field_validator('logit_bias', mode='before')
     @classmethod
     def deserialize_logit_bias(cls, logit_bias_json_str: str) -> dict:
@@ -147,28 +149,28 @@ class _AzureOpenAISettings(BaseSettings):
                 return json.loads(logit_bias_json_str)
             except json.JSONDecodeError as e:
                 logging.warning(f"An error occurred while deserializing the logit bias string -- {str(e)}")
-                
+
         return None
-        
+
     @field_validator('stop_sequence', mode='before')
     @classmethod
     def split_contexts(cls, comma_separated_string: str) -> List[str]:
         if isinstance(comma_separated_string, str) and len(comma_separated_string) > 0:
             return parse_multi_columns(comma_separated_string)
-        
+
         return None
-    
+
     @model_validator(mode="after")
     def ensure_endpoint(self) -> Self:
         if self.endpoint:
             return Self
-        
+
         elif self.resource:
             self.endpoint = f"https://{self.resource}.openai.azure.com"
             return Self
-        
+
         raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
-        
+
     def extract_embedding_dependency(self) -> Optional[dict]:
         if self.embedding_name:
             return {
@@ -193,9 +195,9 @@ class _AzureOpenAISettings(BaseSettings):
                         "type": "system_assigned_managed_identity"
                     }
                 }
-        else:   
+        else:
             return None
-    
+
 
 class _SearchCommonSettings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -218,17 +220,17 @@ class _SearchCommonSettings(BaseSettings):
     def split_contexts(cls, comma_separated_string: str, info: ValidationInfo) -> List[str]:
         if isinstance(comma_separated_string, str) and len(comma_separated_string) > 0:
             return parse_multi_columns(comma_separated_string)
-        
+
         return cls.model_fields[info.field_name].get_default()
 
 
 class DatasourcePayloadConstructor(BaseModel, ABC):
     _settings: '_AppSettings' = PrivateAttr()
-    
+
     def __init__(self, settings: '_AppSettings', **data):
         super().__init__(**data)
         self._settings = settings
-    
+
     @abstractmethod
     def construct_payload_configuration(
         self,
@@ -270,36 +272,36 @@ class _AzureSearchSettings(BaseSettings, DatasourcePayloadConstructor):
         'vectorSemanticHybrid'
     ] = "simple"
     permitted_groups_column: Optional[str] = Field(default=None, exclude=True)
-    
+
     # Constructed fields
     endpoint: Optional[str] = None
     authentication: Optional[dict] = None
     embedding_dependency: Optional[dict] = None
     fields_mapping: Optional[dict] = None
     filter: Optional[str] = Field(default=None, exclude=True)
-    
+
     @field_validator('content_columns', 'vector_columns', mode="before")
     @classmethod
     def split_columns(cls, comma_separated_string: str) -> List[str]:
         if isinstance(comma_separated_string, str) and len(comma_separated_string) > 0:
             return parse_multi_columns(comma_separated_string)
-        
+
         return None
-    
+
     @model_validator(mode="after")
     def set_endpoint(self) -> Self:
         self.endpoint = f"https://{self.service}.{self.endpoint_suffix}"
         return self
-    
+
     @model_validator(mode="after")
     def set_authentication(self) -> Self:
         if self.key:
             self.authentication = {"type": "api_key", "key": self.key}
         else:
             self.authentication = {"type": "system_assigned_managed_identity"}
-            
+
         return self
-    
+
     @model_validator(mode="after")
     def set_fields_mapping(self) -> Self:
         self.fields_mapping = {
@@ -310,7 +312,7 @@ class _AzureSearchSettings(BaseSettings, DatasourcePayloadConstructor):
             "vector_fields": self.vector_columns
         }
         return self
-    
+
     @model_validator(mode="after")
     def set_query_type(self) -> Self:
         self.query_type = to_snake(self.query_type)
@@ -327,9 +329,9 @@ class _AzureSearchSettings(BaseSettings, DatasourcePayloadConstructor):
             filter_string = generateFilterString(user_token)
             logging.debug(f"FILTER: {filter_string}")
             return filter_string
-        
+
         return None
-            
+
     def construct_payload_configuration(
         self,
         *args,
@@ -338,12 +340,12 @@ class _AzureSearchSettings(BaseSettings, DatasourcePayloadConstructor):
         request = kwargs.pop('request', None)
         if request and self.permitted_groups_column:
             self.filter = self._set_filter_string(request)
-            
+
         self.embedding_dependency = \
             self._settings.azure_openai.extract_embedding_dependency()
         parameters = self.model_dump(exclude_none=True, by_alias=True)
         parameters.update(self._settings.search.model_dump(exclude_none=True, by_alias=True))
-        
+
         return {
             "type": self._type,
             "parameters": parameters
@@ -374,20 +376,20 @@ class _AzureCosmosDbMongoVcoreSettings(
     title_column: Optional[str] = Field(default=None, exclude=True)
     url_column: Optional[str] = Field(default=None, exclude=True)
     filename_column: Optional[str] = Field(default=None, exclude=True)
-    
+
     # Constructed fields
     authentication: Optional[dict] = None
     embedding_dependency: Optional[dict] = None
     fields_mapping: Optional[dict] = None
-    
+
     @field_validator('content_columns', 'vector_columns', mode="before")
     @classmethod
     def split_columns(cls, comma_separated_string: str) -> List[str]:
         if isinstance(comma_separated_string, str) and len(comma_separated_string) > 0:
             return parse_multi_columns(comma_separated_string)
-        
+
         return None
-    
+
     @model_validator(mode="after")
     def construct_authentication(self) -> Self:
         self.authentication = {
@@ -395,7 +397,7 @@ class _AzureCosmosDbMongoVcoreSettings(
             "connection_string": self.connection_string
         }
         return self
-    
+
     @model_validator(mode="after")
     def set_fields_mapping(self) -> Self:
         self.fields_mapping = {
@@ -406,7 +408,7 @@ class _AzureCosmosDbMongoVcoreSettings(
             "vector_fields": self.vector_columns
         }
         return self
-    
+
     def construct_payload_configuration(
         self,
         *args,
@@ -443,29 +445,29 @@ class _ElasticsearchSettings(BaseSettings, DatasourcePayloadConstructor):
     url_column: Optional[str] = Field(default=None, exclude=True)
     filename_column: Optional[str] = Field(default=None, exclude=True)
     embedding_model_id: Optional[str] = Field(default=None, exclude=True)
-    
+
     # Constructed fields
     authentication: Optional[dict] = None
     embedding_dependency: Optional[dict] = None
     fields_mapping: Optional[dict] = None
-    
+
     @field_validator('content_columns', 'vector_columns', mode="before")
     @classmethod
     def split_columns(cls, comma_separated_string: str) -> List[str]:
         if isinstance(comma_separated_string, str) and len(comma_separated_string) > 0:
             return parse_multi_columns(comma_separated_string)
-        
+
         return None
-    
+
     @model_validator(mode="after")
     def set_authentication(self) -> Self:
         self.authentication = {
             "type": "encoded_api_key",
             "encoded_api_key": self.encoded_api_key
         }
-        
+
         return self
-    
+
     @model_validator(mode="after")
     def set_fields_mapping(self) -> Self:
         self.fields_mapping = {
@@ -476,7 +478,7 @@ class _ElasticsearchSettings(BaseSettings, DatasourcePayloadConstructor):
             "vector_fields": self.vector_columns
         }
         return self
-    
+
     def construct_payload_configuration(
         self,
         *args,
@@ -484,11 +486,11 @@ class _ElasticsearchSettings(BaseSettings, DatasourcePayloadConstructor):
     ):
         self.embedding_dependency = \
             {"type": "model_id", "model_id": self.embedding_model_id} if self.embedding_model_id else \
-            self._settings.azure_openai.extract_embedding_dependency() 
-            
+            self._settings.azure_openai.extract_embedding_dependency()
+
         parameters = self.model_dump(exclude_none=True, by_alias=True)
         parameters.update(self._settings.search.model_dump(exclude_none=True, by_alias=True))
-                
+
         return {
             "type": self._type,
             "parameters": parameters
@@ -515,29 +517,29 @@ class _PineconeSettings(BaseSettings, DatasourcePayloadConstructor):
     title_column: Optional[str] = Field(default=None, exclude=True)
     url_column: Optional[str] = Field(default=None, exclude=True)
     filename_column: Optional[str] = Field(default=None, exclude=True)
-    
+
     # Constructed fields
     authentication: Optional[dict] = None
     embedding_dependency: Optional[dict] = None
     fields_mapping: Optional[dict] = None
-    
+
     @field_validator('content_columns', 'vector_columns', mode="before")
     @classmethod
     def split_columns(cls, comma_separated_string: str) -> List[str]:
         if isinstance(comma_separated_string, str) and len(comma_separated_string) > 0:
             return parse_multi_columns(comma_separated_string)
-        
+
         return None
-    
+
     @model_validator(mode="after")
     def set_authentication(self) -> Self:
         self.authentication = {
             "type": "api_key",
             "api_key": self.api_key
         }
-        
+
         return self
-    
+
     @model_validator(mode="after")
     def set_fields_mapping(self) -> Self:
         self.fields_mapping = {
@@ -548,7 +550,7 @@ class _PineconeSettings(BaseSettings, DatasourcePayloadConstructor):
             "vector_fields": self.vector_columns
         }
         return self
-    
+
     def construct_payload_configuration(
         self,
         *args,
@@ -558,7 +560,7 @@ class _PineconeSettings(BaseSettings, DatasourcePayloadConstructor):
             self._settings.azure_openai.extract_embedding_dependency()
         parameters = self.model_dump(exclude_none=True, by_alias=True)
         parameters.update(self._settings.search.model_dump(exclude_none=True, by_alias=True))
-        
+
         return {
             "type": self._type,
             "parameters": parameters
@@ -584,18 +586,18 @@ class _AzureMLIndexSettings(BaseSettings, DatasourcePayloadConstructor):
     title_column: Optional[str] = Field(default=None, exclude=True)
     url_column: Optional[str] = Field(default=None, exclude=True)
     filename_column: Optional[str] = Field(default=None, exclude=True)
-    
+
     # Constructed fields
     fields_mapping: Optional[dict] = None
-    
+
     @field_validator('content_columns', 'vector_columns', mode="before")
     @classmethod
     def split_columns(cls, comma_separated_string: str) -> List[str]:
         if isinstance(comma_separated_string, str) and len(comma_separated_string) > 0:
             return parse_multi_columns(comma_separated_string)
-        
+
         return None
-    
+
     @model_validator(mode="after")
     def set_fields_mapping(self) -> Self:
         self.fields_mapping = {
@@ -606,7 +608,7 @@ class _AzureMLIndexSettings(BaseSettings, DatasourcePayloadConstructor):
             "vector_fields": self.vector_columns
         }
         return self
-    
+
     def construct_payload_configuration(
         self,
         *args,
@@ -614,7 +616,7 @@ class _AzureMLIndexSettings(BaseSettings, DatasourcePayloadConstructor):
     ):
         parameters = self.model_dump(exclude_none=True, by_alias=True)
         parameters.update(self._settings.search.model_dump(exclude_none=True, by_alias=True))
-        
+
         return {
             "type": self._type,
             "parameters": parameters
@@ -629,7 +631,7 @@ class _AzureSqlServerSettings(BaseSettings, DatasourcePayloadConstructor):
         env_ignore_empty=True
     )
     _type: Literal["azure_sql_server"] = PrivateAttr(default="azure_sql_server")
-    
+
     connection_string: Optional[str] = Field(default=None, exclude=True)
     table_schema: Optional[str] = None
     schema_max_row: Optional[int] = None
@@ -637,10 +639,10 @@ class _AzureSqlServerSettings(BaseSettings, DatasourcePayloadConstructor):
     database_server: Optional[str] = None
     database_name: Optional[str] = None
     port: Optional[int] = None
-    
+
     # Constructed fields
     authentication: Optional[dict] = None
-    
+
     @model_validator(mode="after")
     def construct_authentication(self) -> Self:
         if self.connection_string:
@@ -653,7 +655,7 @@ class _AzureSqlServerSettings(BaseSettings, DatasourcePayloadConstructor):
                 "type": "system_assigned_managed_identity"
             }
         return self
-    
+
     def construct_payload_configuration(
         self,
         *args,
@@ -661,12 +663,12 @@ class _AzureSqlServerSettings(BaseSettings, DatasourcePayloadConstructor):
     ):
         parameters = self.model_dump(exclude_none=True, by_alias=True)
         #parameters.update(self._settings.search.model_dump(exclude_none=True, by_alias=True))
-        
+
         return {
             "type": self._type,
             "parameters": parameters
         }
-    
+
 
 class _MongoDbSettings(BaseSettings, DatasourcePayloadConstructor):
     model_config = SettingsConfigDict(
@@ -676,7 +678,7 @@ class _MongoDbSettings(BaseSettings, DatasourcePayloadConstructor):
         env_ignore_empty=True
     )
     _type: Literal["mongo_db"] = PrivateAttr(default="mongo_db")
-    
+
     endpoint: str
     username: str = Field(exclude=True)
     password: str = Field(exclude=True)
@@ -693,21 +695,21 @@ class _MongoDbSettings(BaseSettings, DatasourcePayloadConstructor):
     title_column: Optional[str] = Field(default=None, exclude=True)
     url_column: Optional[str] = Field(default=None, exclude=True)
     filename_column: Optional[str] = Field(default=None, exclude=True)
-    
-    
+
+
     # Constructed fields
     authentication: Optional[dict] = None
     embedding_dependency: Optional[dict] = None
     fields_mapping: Optional[dict] = None
-    
+
     @field_validator('content_columns', 'vector_columns', mode="before")
     @classmethod
     def split_columns(cls, comma_separated_string: str) -> List[str]:
         if isinstance(comma_separated_string, str) and len(comma_separated_string) > 0:
             return parse_multi_columns(comma_separated_string)
-        
+
         return None
-    
+
     @model_validator(mode="after")
     def set_fields_mapping(self) -> Self:
         self.fields_mapping = {
@@ -718,7 +720,7 @@ class _MongoDbSettings(BaseSettings, DatasourcePayloadConstructor):
             "vector_fields": self.vector_columns
         }
         return self
-    
+
     @model_validator(mode="after")
     def construct_authentication(self) -> Self:
         self.authentication = {
@@ -727,7 +729,7 @@ class _MongoDbSettings(BaseSettings, DatasourcePayloadConstructor):
             "password": self.password
         }
         return self
-    
+
     def construct_payload_configuration(
         self,
         *args,
@@ -735,16 +737,16 @@ class _MongoDbSettings(BaseSettings, DatasourcePayloadConstructor):
     ):
         self.embedding_dependency = \
             self._settings.azure_openai.extract_embedding_dependency()
-            
+
         parameters = self.model_dump(exclude_none=True, by_alias=True)
         parameters.update(self._settings.search.model_dump(exclude_none=True, by_alias=True))
-        
+
         return {
             "type": self._type,
             "parameters": parameters
         }
-        
-        
+
+
 class _BaseSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=DOTENV_PATH,
@@ -768,6 +770,7 @@ class _B2CSettings(BaseSettings):
     tenant_name: str
     signup_signin_policy: str
     password_reset_policy: str
+    edit_profile_policy: str
     authority: str
     redirect_uri: str
     known_authorities: str
@@ -789,57 +792,57 @@ class _AppSettings(BaseModel):
     def set_promptflow_settings(self) -> Self:
         try:
             self.promptflow = _PromptflowSettings()
-            
+
         except ValidationError:
             self.promptflow = None
-            
+
         return self
-    
+
     @model_validator(mode="after")
     def set_chat_history_settings(self) -> Self:
         try:
             self.chat_history = _ChatHistorySettings()
-        
+
         except ValidationError:
             self.chat_history = None
-        
+
         return self
-    
+
     @model_validator(mode="after")
     def set_datasource_settings(self) -> Self:
         try:
             if self.base_settings.datasource_type == "AzureCognitiveSearch":
                 self.datasource = _AzureSearchSettings(settings=self, _env_file=DOTENV_PATH)
                 logging.debug("Using Azure Cognitive Search")
-            
+
             elif self.base_settings.datasource_type == "AzureCosmosDB":
                 self.datasource = _AzureCosmosDbMongoVcoreSettings(settings=self, _env_file=DOTENV_PATH)
                 logging.debug("Using Azure CosmosDB Mongo vcore")
-            
+
             elif self.base_settings.datasource_type == "Elasticsearch":
                 self.datasource = _ElasticsearchSettings(settings=self, _env_file=DOTENV_PATH)
                 logging.debug("Using Elasticsearch")
-            
+
             elif self.base_settings.datasource_type == "Pinecone":
                 self.datasource = _PineconeSettings(settings=self, _env_file=DOTENV_PATH)
                 logging.debug("Using Pinecone")
-            
+
             elif self.base_settings.datasource_type == "AzureMLIndex":
                 self.datasource = _AzureMLIndexSettings(settings=self, _env_file=DOTENV_PATH)
                 logging.debug("Using Azure ML Index")
-            
+
             elif self.base_settings.datasource_type == "AzureSqlServer":
                 self.datasource = _AzureSqlServerSettings(settings=self, _env_file=DOTENV_PATH)
                 logging.debug("Using SQL Server")
-            
+
             elif self.base_settings.datasource_type == "MongoDB":
                 self.datasource = _MongoDbSettings(settings=self, _env_file=DOTENV_PATH)
                 logging.debug("Using Mongo DB")
-                
+
             else:
                 self.datasource = None
                 logging.warning("No datasource configuration found in the environment -- calls will be made to Azure OpenAI without grounding data.")
-                
+
             return self
 
         except ValidationError as e:
@@ -848,5 +851,3 @@ class _AppSettings(BaseModel):
 
 
 app_settings = _AppSettings()
-# Verifica el valor de redirect_uri
-print(f"Redirect URI in use: {app_settings.b2c.redirect_uri}")
