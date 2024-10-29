@@ -285,7 +285,7 @@ export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }
         if (msalInstance && tenant_name && edit_profile_policy) {
             msalInstance.loginRedirect({
                 authority: `https://${tenant_name}.b2clogin.com/${tenant_name}.onmicrosoft.com/${edit_profile_policy}`,
-                scopes: ["User.Read"],
+                scopes: ["openid", "profile"]
             }).catch(error => {
                 console.error("Profile edit error:", error);
             });
