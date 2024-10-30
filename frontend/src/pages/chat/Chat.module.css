@@ -415,7 +415,20 @@ a {
   background-color: #999999B5;
 }
 
+.sailo {
+  font-size: 12px;
+  padding-bottom: 4px;
+  display: flex;
+  align-items: center;
+}
 
+.sailoText {
+  height: 19px;
+}
+
+.sailoIcon {
+  height: 12px;
+}
 
 
 @media (max-width: 480px) {
